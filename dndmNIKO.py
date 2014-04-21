@@ -21,28 +21,23 @@ IMAGES = filter(
  
 kv = '''
 BoxLayout:
-    orientation:'vertical'
-    TabbedPanel:
-        do_default_tab: False
-        size_hint_y: None
-        size: 0,150
-
-        TabbedPanelItem:
-            text: 'Logic Bricks'
-            GridLayout:
-                #orientation:'horizontal'
-                #rientation:'vertical'
-                id: grid_layout
-                cols: int(self.width / 32)
-
-        TabbedPanelItem:
-            text: 'Level Bricks'
-            GridLayout:
-                #orientation:'horizontal'
-                #rientation:'vertical'
-                id: grid_layout2
-                cols: int(self.width / 32)
+    orientation:'horizontal'
     BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint: 1, 0.25
+            Label:
+                font_size: '20sp'
+                text: 'Level'
+            Label:
+                text: 'NR 1'
+        GridLayout:
+            #orientation:'horizontal'
+            #rientation:'vertical'
+            id: grid_layout
+            cols: int(self.width / 32)
+
         GridLayout:
             id: float_layout
             cols: int(self.width / 32)
@@ -51,66 +46,23 @@ BoxLayout:
             #       rgb: 150, 0, 150
             #    Rectangle:
             #        size: self.size
-        GridLayout:
-            id: float_layout2
-            cols: int(self.width / 32)
-            #canvas:
-            #    Color:
-            #        rgb: 150, 0, 150
-            #    Rectangle:
-            #        size: self.size
-    ControlBar
-
-<ControlBar@BoxLayout>:
-    size_hint_y: None
-    size: 0,60
-    padding: 10
-    spacing: 10
-    
-    BoxLayout:
-        spacing: 10
-        ToggleButton:
-            text: 'Play'
-            size_hint_x: None
-            size: 100,0
-        ToggleButton:
-            text: 'Freeze'
-            size_hint_x: None
-            size: 100,0
-        ToggleButton:
-            text: 'Blackout'
-            size_hint_x: None
-            size: 100,0
-        ToggleButton:
-            text: 'Random'
-            size_hint_x: None
-            size: 100,0
-    
-        Slider:
-            id: slider_global_speed
-            size_hint_x: None
-            size: 250,0
-            min: 0
-            max: 5
-            value: 1
-            step: 0.01
-            on_value: textinput_global_speed.text = str(self.value*100)
-        TextInput:
-            id: textinput_global_speed
-            size_hint_x: None
-            size: 50,0
-            multiline: False
-            on_text_validate: slider_global_speed.value = float(self.text)/100
-
-            text: '100'
-        Label:
-            size_hint_x: None
-            size: 20,0
-            text: '%'
-        Label:
-        Button:
-            size_hint_x: None
-            size: 50,0
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint: 1, 0.25
+            Button:
+                text: 'Next Level'
+            Button:
+                text: 'Start'
+            Button:
+                text: 'Reset'
+            Button:
+                text: 'Previous Level'
+    GridLayout:
+        #canvas:
+        #    Color:
+        #        rgb: 150, 0, 150
+        #    Rectangle:
+        #        size: self.size
 '''
  
  
