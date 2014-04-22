@@ -1,5 +1,6 @@
 import pointer
 import field 
+import kivyrunner
 
 print 'hello world'
 
