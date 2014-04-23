@@ -99,28 +99,31 @@ class Logic:
 
         def doIteration(self):
             for s in self.find("spawn"):
-                print "found spawn"
                 self.pointers.append(pointer.Pointer(s.x,s.y))
-              
+             
+            print "pointer before append:" 
             self.printPointer() 
             appendPointers = []
             removePointers = []
             for p in self.pointers:
                 removePointers.append(p)
-                if self.canPlacePointer(p.x,p.y-1):
-                    appendPointers.append(pointer.Pointer(p.x,p.y-1))
-                if self.canPlacePointer(p.x,p.y+1):
-                    appendPointers.append(pointer.Pointer(p.x,p.y+1))
-                if self.canPlacePointer(p.x-1,p.y):
-                    appendPointers.append(pointer.Pointer(p.x-1,p.y))
-                if self.canPlacePointer(p.x+1,p.y):
-                    appendPointers.append(pointer.Pointer(p.x+1,p.y))
+                if self.canPlacePointer(p.x,p.y-1) and not (p.originx == p.x and p.originy == p.y-1):
+                    appendPointers.append(pointer.Pointer(p.x,p.y-1,p.x,p.y))
+                if self.canPlacePointer(p.x,p.y+1) and not (p.originx == p.x and p.originy == p.y+1):
+                    appendPointers.append(pointer.Pointer(p.x,p.y+1,p.x,p.y))
+                if self.canPlacePointer(p.x-1,p.y) and not (p.originx == p.x-1 and p.originy == p.y):
+                    appendPointers.append(pointer.Pointer(p.x-1,p.y,p.x,p.y))
+                if self.canPlacePointer(p.x+1,p.y) and not (p.originx == p.x+1 and p.originy == p.y):
+                    appendPointers.append(pointer.Pointer(p.x+1,p.y,p.x,p.y))
+            
             for p in removePointers:
                 self.pointers.remove(p)
 
             for p in appendPointers:
                 self.pointers.append(p)
 
+            print "after append and remove"
+            self.printPointer()
             for p in self.pointers:
                 self.performAction(p.x,p.y)
 
