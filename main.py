@@ -37,8 +37,8 @@ robotfield.setFree(5,4)
 
 logicfield = logic.Logic(6,robotfield)
 logicfield.setBlock(0,0,logicblock.LogicBlock("","spawn"))
-logicfield.setBlock(1,0,logicblock.LogicBlock("","moveup"))
-logicfield.setBlock(2,0,logicblock.LogicBlock("","movedown"))
+logicfield.setBlock(1,0,logicblock.LogicBlock("","movedown"))
+logicfield.setBlock(2,0,logicblock.LogicBlock("","moveright"))
 logicfield.printBlocks()
 
 
@@ -54,7 +54,13 @@ robotfield.printBlocks()
 
 
 logicfield.doIteration()
+robotfield.printBlocks()
 logicfield.doIteration()
+robotfield.printBlocks()
+logicfield.printBlocks()
+
+logicfield.doIteration()
+robotfield.printBlocks()
 logicfield.printBlocks()
 #logic:
 # check if there are pointers else:

@@ -32,9 +32,8 @@ class Logic:
                  printStr = ""
                  for x in xrange(self.size):
                      printStr = str(printStr) + "\t" + str(self.data[x][y].blocktype)
-             for p in self.pointers:
-                 print "p: x:" + str(p.x) + " y:" + str(p.y) 
-
+             self.printPointer() 
+             
         def getBlock(self,x,y):
             if self.isOnField(x,y):
                 return self.data[x][y]
@@ -49,7 +48,7 @@ class Logic:
                    return True
         
         def performAction(self,x,y):
-            if isOnField(x,y):
+            if self.isOnField(x,y):
                 if self.data[x][y].blocktype=="moveup":
                     self.field.moveRobotUp()
                 if self.data[x][y].blocktype=="movedown":
@@ -74,6 +73,9 @@ class Logic:
                          foundfields.append(ftype)
              return foundfields
 
+        def printPointer(self): 
+            for p in self.pointers:
+                print "p: x:" + str(p.x) + " y:" + str(p.y) 
 
 
         def doIteration(self):
@@ -81,18 +83,19 @@ class Logic:
                 print "found spawn"
                 self.pointers.append(pointer.Pointer(s.x,s.y))
               
+            self.printPointer() 
             appendPointers = []
             removePointers = []
             for p in self.pointers:
                 removePointers.append(p)
                 if self.canPlacePointer(p.x,p.y-1):
-                    appendPointers.append(p)
-                if self.canPlacePointer(p.x,p.y-1):
-                    appendPointers.append(p)
-                if self.canPlacePointer(p.x,p.y-1):
-                    appendPointers.append(p)
-                if self.canPlacePointer(p.x,p.y-1):
-                    appendPointers.append(p)
+                    appendPointers.append(pointer.Pointer(p.x,p.y-1))
+                if self.canPlacePointer(p.x,p.y+1):
+                    appendPointers.append(pointer.Pointer(p.x,p.y+1))
+                if self.canPlacePointer(p.x-1,p.y):
+                    appendPointers.append(pointer.Pointer(p.x-1,p.y))
+                if self.canPlacePointer(p.x+1,p.y):
+                    appendPointers.append(pointer.Pointer(p.x+1,p.y))
             for p in removePointers:
                 self.pointers.remove(p)
 
@@ -100,7 +103,7 @@ class Logic:
                 self.pointers.append(p)
 
             for p in self.pointers:
-                performAction(p.x,p.y)
+                self.performAction(p.x,p.y)
 
 
 
