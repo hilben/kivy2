@@ -45,8 +45,27 @@ class Logic:
                if self.data[x][y].blocktype == "empty":
                     return False
                else:
+                   r = self.field.findRobot()
+                   if self.data[x][y].blocktype == "wallup":
+                       return not self.field.isPassableBlock(r.x,r.y-1)
+                   if self.data[x][y].blocktype == "walldown":
+                       return not self.field.isPassableBlock(r.x,r.y+1)
+                   if self.data[x][y].blocktype == "wallleft":
+                       return not self.field.isPassableBlock(r.x-1,r.y)
+                   if self.data[x][y].blocktype == "wallright":
+                       return not self.field.isPassableBlock(r.x+1,r.y)
+                   if self.data[x][y].blocktype == "collup":
+                       return not self.field.isCollectable(r.x,r.y-1)
+                   if self.data[x][y].blocktype == "colldown":
+                       return not self.field.isCollectable(r.x,r.y+1)
+                   if self.data[x][y].blocktype == "collleft":
+                       return not self.field.isCollectable(r.x-1,r.y)
+                   if self.data[x][y].blocktype == "collright":
+                       return not self.field.isCollectable(r.x+1,r.y) 
+
                    return True
         
+
         def performAction(self,x,y):
             if self.isOnField(x,y):
                 if self.data[x][y].blocktype=="moveup":
