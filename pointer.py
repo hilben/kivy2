@@ -9,5 +9,3 @@ class Pointer:
    def printCoordinates(self):
 	   print "Pointer: x: " , self.x , " y: ",  self.y
 
-a = Pointer(10,4)
-a.printCoordinates()

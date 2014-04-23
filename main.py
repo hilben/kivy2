@@ -1,14 +1,11 @@
 import pointer
 import field 
 import kivyrunner
+import logic 
+import logicblock
 
 print 'hello world'
 
-def continueCodingBlocks(pointers, blocks, field):
-	if len(pointers)>0:
-	    for p in pointers:
-                print blocks.getBlock(p.x,p.y) 
-	
 	
 def performActionOnField(action, field):
     print "to be implemneted"
@@ -38,13 +35,27 @@ robotfield.setFree(4,6)
 robotfield.setFree(5,4)
 
 
-logicfield = field.Field(10)
-continueCodingBlocks(pointers, logicfield, robotfield)
+logicfield = logic.Logic(6,robotfield)
+logicfield.setBlock(0,0,logicblock.LogicBlock("","spawn"))
+logicfield.setBlock(1,0,logicblock.LogicBlock("","moveup"))
+logicfield.setBlock(2,0,logicblock.LogicBlock("","movedown"))
+logicfield.printBlocks()
+
 
 robotfield.printBlocks()
+robotfield.moveRobotLeft()
+robotfield.moveRobotDown()
+robotfield.moveRobotDown()
+robotfield.moveRobotLeft()
+
+
 robotfield.moveRobotUp()
 robotfield.printBlocks()
 
+
+logicfield.doIteration()
+logicfield.doIteration()
+logicfield.printBlocks()
 #logic:
 # check if there are pointers else:
 # For all field on the logicboard
