@@ -1,0 +1,71 @@
+<GridLayoutWithGrid>:
+    canvas.before:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 2
+    spacing: 2
+
+BoxLayout:
+    orientation:'horizontal'
+    BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint: 1, 0.25
+            Label:
+                font_size: '20sp'
+                text: 'Level'
+            Label:
+                text: 'NR 1'
+        GridLayout:
+            cols: 2
+            padding: 2
+            spacing: 2
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.2, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Gridlabel:
+            Gridlabel:
+            Gridlabel:
+            Gridlabel:
+            Gridlabel:
+            Gridlabel:
+        GridLayout:
+            id: grid_layout
+            cols: int(self.width / 32)
+
+        GridLayoutWithGrid:
+            id: float_layout
+            cols: 6
+            rows: 6
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint: 1, 0.25
+            Button:
+                text: 'Next Level'
+            Button:
+                text: 'Start'
+            Button:
+                text: 'Reset'
+            Button:
+                text: 'Previous Level'
+    GridLayout:
+        #canvas:
+        #    Color:
+        #        rgb: 150, 0, 150
+        #    Rectangle:
+        #        size: self.size
+
+<Gridlabel@Label>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
