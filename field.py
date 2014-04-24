@@ -28,6 +28,11 @@ class Field:
             if self.isOnField(x,y):
                 self.data[x][y] = block
 
+        def isCollectable(self,x,y):
+            if self.isOnField(x,y):
+                return self.data[x][y]=="#"
+            return False
+
         def isPassableBlock(self,x,y):
             if self.isOnField(x,y):
                 if self.data[x][y]=="#" or self.data[x][y]=="_":
@@ -56,10 +61,11 @@ class Field:
                          robot.x = x
                          robot.y = y
                          return robot
+             return robot
 
         def moveRobotUp(self):
              robot = self.findRobot()
-             print 'Trying to move robot to ' , robot.x , robot.y-1
+             print 'Trying to move robot to ' + str( robot.x) + " "  + str( robot.y-1)
              if self.isPassableBlock(robot.x,robot.y-1):
                  self.setFree(robot.x,robot.y)
                  self.setRobot(robot.x,robot.y-1)	
@@ -68,7 +74,7 @@ class Field:
 
         def moveRobotDown(self):
              robot = self.findRobot()
-             print 'Trying to move robot to ' , robot.x , robot.y+1
+             print 'Trying to move robot to ' + str(robot.x) + " " + str(robot.y+1)
              if self.isPassableBlock(robot.x,robot.y+1):
                  self.setFree(robot.x,robot.y)
                  self.setRobot(robot.x,robot.y+1)	
@@ -77,7 +83,7 @@ class Field:
 
         def moveRobotLeft(self):
              robot = self.findRobot()
-             print 'Trying to move robot to ' , robot.x-1 , robot.y
+             print 'Trying to move robot to ' + str( robot.x-1) + " " + str( robot.y)
              if self.isPassableBlock(robot.x-1,robot.y):
                  self.setFree(robot.x,robot.y)
                  self.setRobot(robot.x-1,robot.y)	
@@ -87,7 +93,7 @@ class Field:
 
         def moveRobotRight(self):
              robot = self.findRobot()
-             print 'Trying to move robot to ' , robot.x+1 , robot.y
+             print 'Trying to move robot to ' + str( robot.x+1) + " " + str( robot.y)
              if self.isPassableBlock(robot.x+1,robot.y):
                  self.setFree(robot.x,robot.y)
                  self.setRobot(robot.x+1,robot.y)	
