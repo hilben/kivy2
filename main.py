@@ -4,34 +4,27 @@ import kivyrunner
 import logic 
 import logicblock
 
-print 'hello world'
-
-	
-def performActionOnField(action, field):
-    print "to be implemneted"
-
-
-
-
-
-size = 10
-
-pointers = []
-pointers.append(pointer.Pointer(3,10))
-
-
-print "trying to create field:"
-
 game = kivyrunner.KivyRunner()
 
 logicfield = logic.Logic(6,game.level)
-logicfield.setBlock(0,0,logicblock.LogicBlock("","spawn"))
-logicfield.setBlock(1,0,logicblock.LogicBlock("","movedown"))
-logicfield.setBlock(2,0,logicblock.LogicBlock("","moveright"))
-logicfield.printBlocks()
+logicfield.setBlock(0,0,logicblock.LogicBlock("","s"))
+logicfield.setBlock(1,0,logicblock.LogicBlock("","wd"))
+logicfield.setBlock(2,0,logicblock.LogicBlock("","ml"))
+logicfield.setBlock(0,2,logicblock.LogicBlock("","s"))
+logicfield.setBlock(1,2,logicblock.LogicBlock("","wl"))
+logicfield.setBlock(2,2,logicblock.LogicBlock("","mu"))
+
+logicfield.setBlock(0,4,logicblock.LogicBlock("","s"))
+logicfield.setBlock(1,4,logicblock.LogicBlock("","wu"))
+logicfield.setBlock(2,4,logicblock.LogicBlock("","mr"))
+
+logicfield.setBlock(4,0,logicblock.LogicBlock("","s"))
+logicfield.setBlock(4,1,logicblock.LogicBlock("","wr"))
+logicfield.setBlock(4,2,logicblock.LogicBlock("","md"))
 
 game.loadLevel(0)
 game.setLogic(logicfield)
 
-for x in range(0,8):
+
+while raw_input("enter any key"):    
     game.doIteration()

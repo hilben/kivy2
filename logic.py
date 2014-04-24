@@ -13,7 +13,7 @@ class Logic:
             for y in xrange(size):
                 self.data.append([])
                 for x in xrange(size):
-                    self.data[y].append(logicblock.LogicBlock("","empty"))
+                    self.data[y].append(logicblock.LogicBlock("","e"))
 
         def isOnField(self,x,y):
             if x >= 0 and x < self.size and y >= 0 and y < self.size:
@@ -32,35 +32,36 @@ class Logic:
                  printStr = ""
                  for x in xrange(self.size):
                      printStr = str(printStr) + "\t" + str(self.data[x][y].blocktype)
-             self.printPointer() 
+             print printStr
+	     self.printPointer() 
              
         def getBlock(self,x,y):
             if self.isOnField(x,y):
                 return self.data[x][y]
             else:
-                return logicblock.LogicBlock("","empty")
+                return logicblock.LogicBlock("","e")
 
         def canPlacePointer(self,x,y):
            if self.isOnField(x,y):
-               if self.data[x][y].blocktype == "empty":
+               if self.data[x][y].blocktype == "e":
                     return False
                else:
                    r = self.field.findRobot()
-                   if self.data[x][y].blocktype == "wallup":
+                   if self.data[x][y].blocktype == "wu":
                        return not self.field.isPassableBlock(r.x,r.y-1)
-                   if self.data[x][y].blocktype == "walldown":
+                   if self.data[x][y].blocktype == "wd":
                        return not self.field.isPassableBlock(r.x,r.y+1)
-                   if self.data[x][y].blocktype == "wallleft":
+                   if self.data[x][y].blocktype == "wl":
                        return not self.field.isPassableBlock(r.x-1,r.y)
-                   if self.data[x][y].blocktype == "wallright":
+                   if self.data[x][y].blocktype == "wr":
                        return not self.field.isPassableBlock(r.x+1,r.y)
-                   if self.data[x][y].blocktype == "collup":
+                   if self.data[x][y].blocktype == "cu":
                        return not self.field.isCollectable(r.x,r.y-1)
-                   if self.data[x][y].blocktype == "colldown":
+                   if self.data[x][y].blocktype == "cd":
                        return not self.field.isCollectable(r.x,r.y+1)
-                   if self.data[x][y].blocktype == "collleft":
+                   if self.data[x][y].blocktype == "cl":
                        return not self.field.isCollectable(r.x-1,r.y)
-                   if self.data[x][y].blocktype == "collright":
+                   if self.data[x][y].blocktype == "cr":
                        return not self.field.isCollectable(r.x+1,r.y) 
 
                    return True
@@ -68,28 +69,23 @@ class Logic:
 
         def performAction(self,x,y):
             if self.isOnField(x,y):
-                if self.data[x][y].blocktype=="moveup":
+                if self.data[x][y].blocktype=="mu":
                     self.field.moveRobotUp()
-                if self.data[x][y].blocktype=="movedown":
+                if self.data[x][y].blocktype=="md":
                     self.field.moveRobotDown()
-                if self.data[x][y].blocktype=="moveleft":
+                if self.data[x][y].blocktype=="ml":
                     self.field.moveRobotLeft()  
-                if self.data[x][y].blocktype=="moveright":
+                if self.data[x][y].blocktype=="mr":
                     self.field.moveRobotRight()
 
         def find(self,fieldtype):
              foundfields = []
-             ftype = pointer.Pointer(0,0)
-             ftype.found = False
-             ftype.x = 0
-             ftype.y = 0
              for y in xrange(self.size):
                  for x in xrange(self.size):
                      if self.data[x][y].blocktype == fieldtype:
-                         ftype.found = True
-                         ftype.x = x
-                         ftype.y = y
+                         ftype = pointer.Pointer(x,y)
                          foundfields.append(ftype)
+			 print "found " + fieldtype + " at " + str(ftype.x) + " " + str(ftype.y)
              return foundfields
 
         def printPointer(self): 
@@ -98,7 +94,7 @@ class Logic:
 
 
         def doIteration(self):
-            for s in self.find("spawn"):
+            for s in self.find("s"):
                 self.pointers.append(pointer.Pointer(s.x,s.y))
              
             print "pointer before append:" 

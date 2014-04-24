@@ -2,20 +2,25 @@ import field
 
 class KivyRunner:
 
-
     currentLevel = 0
     level = field.Field(1)
-
 
     def __init__(self):
 	    self.level = field.Field(10)
 
 
     def loadLevel(self,number):
-        self.level = field.Field(10)
-
-	if number==0:
-	    self.level.setRobot(4,4)
+	self.level = field.Field(10)
+	f = open("level1","r")
+        level = field.Field(10)
+        x,y = 0,0
+        for line in f:
+	    x = 0
+	    for s in line:
+	        if (s!="\n"):
+	            self.level.setBlock(x,y,s)
+	        x += 1
+            y +=1
 
 
     def nextLevel(self):
@@ -45,8 +50,10 @@ class KivyRunner:
 
     def doIteration(self):
 	    self.logic.doIteration()
-	    self.level.printBlocks()
 	    self.logic.printBlocks()
+            self.level.printBlocks() 
 
+    def isLevelFinished(self):
+	    return self.field.getNumberOfCollectables()<1
 
 

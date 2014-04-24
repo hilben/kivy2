@@ -15,6 +15,8 @@ class KivyRunnerTest(unittest.TestCase):
             self.assertEqual(self.field.isOnField(3,3),True)
 
 	    with self.assertRaises(Exception):
+                self.field.setRobot(-1,-1)
+	    with self.assertRaises(Exception):
                 self.field.findRobot()
 	    self.field.setRobot(5,5)
             self.assertEqual(self.field.isPassableBlock(5,4),True)            
@@ -45,22 +47,27 @@ class KivyRunnerTest(unittest.TestCase):
 	    self.assertTrue(self.field.isCollectable(9,5))
 	    self.assertTrue(self.field.isCollectable(0,5))
 	    self.assertTrue(self.field.isCollectable(4,0))
-
+            self.assertEqual(self.field.getNumberOfCollectables(),4)
+             
             #Testing for not breaking the borders
 	    for x in range(1,20):
 		    self.field.moveRobotLeft()
             self.assertTrue(self.robot_at(0,9))
-            for x in range(1,20):
+            self.assertEqual(self.field.getNumberOfCollectables(),3)
+	    for x in range(1,20):
 		    self.field.moveRobotUp()
             self.assertTrue(self.robot_at(0,0))
+            self.assertEqual(self.field.getNumberOfCollectables(),2)
             for x in range(1,20):
 		    self.field.moveRobotRight()
             self.assertTrue(self.robot_at(9,0))
+            self.assertEqual(self.field.getNumberOfCollectables(),1)
             for x in range(1,20):
 		    self.field.moveRobotDown()
             self.assertTrue(self.robot_at(9,9))
-
+            self.assertEqual(self.field.getNumberOfCollectables(),0)
             self.assertEqual(self.field.collects,4)
+            self.assertTrue(self.field.finished)
 
 
     def robot_at(self,x,y):
