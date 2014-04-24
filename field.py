@@ -20,6 +20,8 @@ class Field:
                 return False
 
         def setRobot(self,x,y):
+	    if not self.isOnField(x,y):
+                raise Exception("Placing robot out of field")
             if self.data[x][y]=="#":
                 self.collects += 1
             self.setBlock(x,y,"M")
@@ -61,7 +63,7 @@ class Field:
                          robot.x = x
                          robot.y = y
                          return robot
-             return robot
+             raise Exception("can not find robot")
 
         def moveRobotUp(self):
              robot = self.findRobot()

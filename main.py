@@ -33,5 +33,5 @@ logicfield.printBlocks()
 game.loadLevel(0)
 game.setLogic(logicfield)
 
-for x in range(0,4):
+for x in range(0,8):
     game.doIteration()
