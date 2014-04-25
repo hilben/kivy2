@@ -67,7 +67,7 @@ class KivyRunnerTest(unittest.TestCase):
             self.assertTrue(self.robot_at(9,9))
             self.assertEqual(self.field.getNumberOfCollectables(),0)
             self.assertEqual(self.field.collects,4)
-            self.assertTrue(self.field.finished)
+            self.assertTrue(self.field.isFinished())
 
 
     def robot_at(self,x,y):

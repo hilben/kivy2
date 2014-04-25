@@ -5,7 +5,6 @@ class Field:
         data=[]
         size=0
         collects=0
-        finished = False
 
         def __init__(self, size):
             self.size=size
@@ -28,11 +27,13 @@ class Field:
             self.setBlock(x,y,"M")
 	    if self.getNumberOfCollectables()==0:
 		print "Everything collected level is done"
-		self.finished = True
 
         def setBlock(self,x,y,block):
             if self.isOnField(x,y):
                 self.data[x][y] = block
+
+        def isFinished(self):
+	    return self.getNumberOfCollectables()==0
 
         def isCollectable(self,x,y):
             if self.isOnField(x,y):
@@ -129,10 +130,14 @@ class Field:
 		 printStr = str(y) + ": "
                  for x in range(self.size):
                      printStr = printStr +" " + self.data[x][y] 
-             print printStr + "\n","Collectables left: " + str(self.getNumberOfCollectables()), "Done " + str(self.finished) ,  "Robot at x:" + str(self.findRobot().x) + " " + str(self.findRobot().y)
+             print printStr
+	     self.printDebug()
 
         def getBlock(self,x,y):
             if self.isOnField(x,y):
                 return self.data[x][y]
             else:
                 return '+'
+
+	def printDebug(self):
+            print "\n","Collectables left: " + str(self.getNumberOfCollectables()), "Done " + str(self.getNumberOfCollectables()==0) ,  "Robot at x:" + str(self.findRobot().x) + " " + str(self.findRobot().y)

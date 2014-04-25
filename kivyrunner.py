@@ -1,4 +1,6 @@
 import field
+import logic
+import logicblock 
 
 class KivyRunner:
 
@@ -11,7 +13,7 @@ class KivyRunner:
 
     def loadLevel(self,number):
 	self.level = field.Field(10)
-	f = open("level1","r")
+	f = open("level"+str(number),"r")
         level = field.Field(10)
         x,y = 0,0
         for line in f:
@@ -22,6 +24,20 @@ class KivyRunner:
 	        x += 1
             y +=1
 
+    #debug method to load logic out of file
+    def loadLogic(self,filename):
+	f = open(filename,"r").read()
+        self.logic = logic.Logic(6,self.level)
+        x,y = 0,0
+	lines = f.split("\n")
+        for line in lines:
+	    x = 0
+	    entries = line.split(" ")
+	    
+	    for s in entries:
+	        self.logic.setBlock(x,y,logicblock.LogicBlock("",s))
+	        x += 1
+            y +=1
 
     def nextLevel(self):
 	    self.currentLevel = self.currentLevel + 1
