@@ -21,10 +21,13 @@ class Field:
 
         def setRobot(self,x,y):
 	    if not self.isOnField(x,y):
-                raise Exception("Placing robot out of field")
+                raise FieldException("Placing robot out of field")
 	    if self.data[x][y]=="#":
                 self.collects += 1
-            self.setBlock(x,y,"M")
+	    if not self.data[x][y]=="X":
+                self.setBlock(x,y,"M")
+	    else:
+	        print "The robot died"
 	    if self.getNumberOfCollectables()==0:
 		print "Everything collected level is done"
 
@@ -42,7 +45,7 @@ class Field:
 
         def isPassableBlock(self,x,y):
             if self.isOnField(x,y):
-                if self.data[x][y]=="#" or self.data[x][y]=="_":
+                if self.data[x][y]!="+":
                     return True
                 return False
             return False
@@ -56,6 +59,9 @@ class Field:
         def setWall(self,x,y):
             self.setBlock(x,y,"+")
 
+        def setDead(self,x,y):
+            self.setBlock(x,y,"X")
+
         def findRobot(self):
              robot = pointer.Pointer(0,0)
              robot.found = False
@@ -68,7 +74,7 @@ class Field:
                          robot.x = x
                          robot.y = y
                          return robot
-             raise Exception("can not find robot")
+             raise FieldException("can not find robot. It might died")
 
         def moveRobotUp(self):
              robot = self.findRobot()
@@ -141,3 +147,6 @@ class Field:
 
 	def printDebug(self):
             print "\n","Collectables left: " + str(self.getNumberOfCollectables()), "Done " + str(self.getNumberOfCollectables()==0) ,  "Robot at x:" + str(self.findRobot().x) + " " + str(self.findRobot().y)
+
+class FieldException(Exception):
+	pass

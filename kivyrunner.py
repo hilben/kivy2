@@ -13,6 +13,7 @@ class KivyRunner:
 
     def loadLevel(self,number):
 	self.level = field.Field(10)
+	self.currentLevel = number
 	f = open("level"+str(number),"r")
         level = field.Field(10)
         x,y = 0,0
@@ -51,6 +52,8 @@ class KivyRunner:
 
     def reset(self):
 	    self.loadLevel(self.currentLevel)
+	    self.logic.reset()
+            self.logic.start() #TODO: put into separate function
 
     def setLogic(self,logic):
 	   self.reset()
@@ -65,9 +68,14 @@ class KivyRunner:
 
 
     def doIteration(self):
-	    self.logic.doIteration()
-	    self.logic.printBlocks()
-            self.level.printBlocks() 
+	    try:
+	        self.logic.doIteration()
+	        self.logic.printBlocks()
+                self.level.printBlocks() 
+            except field.FieldException as e:
+		print "Level was reseted`because: "
+		print str(e )
+		self.reset()
 
     def isLevelFinished(self):
 	    return self.field.getNumberOfCollectables()<1
