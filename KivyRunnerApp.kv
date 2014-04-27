@@ -1,14 +1,18 @@
 <GridLayoutWithGrid>:
     canvas.before:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgba: 0.8, 0.2, 0.2, 1
         Rectangle:
             pos: self.pos
             size: self.size
+        #Line:
+            #points: (self.pos) + [self.pos[0], self.pos[0]+self.size[0]]
+            #width: 3
     padding: 2
     spacing: 2
 
 BoxLayout:
+    float_layout: float_layout
     orientation:'horizontal'
     BoxLayout:
         orientation:'vertical'
@@ -21,29 +25,36 @@ BoxLayout:
             Label:
                 text: 'NR 1'
         GridLayout:
-            cols: 2
+            id: grid_layout
+            size_hint: 1, 1
+            #cols: int(self.width / 32)
+            cols: 5
             padding: 2
             spacing: 2
             canvas.before:
                 Color:
-                    rgba: 0.2, 0.2, 0.2, 1
+                    rgba: 0.2, 0.8, 0.2, 1
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            Gridlabel:
-            Gridlabel:
-            Gridlabel:
-            Gridlabel:
-            Gridlabel:
-            Gridlabel:
-        GridLayout:
-            id: grid_layout
-            cols: int(self.width / 32)
 
         GridLayoutWithGrid:
+        #GridLayout:
             id: float_layout
             cols: 6
             rows: 6
+            
+        Label:
+            #text: 'asdfasdf'
+            text: str(root.float_layout.size)
+            canvas.before:
+                Color:
+                    rgba: 0.5, 0.5, 0.5, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        Label:
+            text: str(root.float_layout.pos)
         BoxLayout:
             orientation:'horizontal'
             size_hint: 1, 0.25
@@ -55,17 +66,52 @@ BoxLayout:
                 text: 'Reset'
             Button:
                 text: 'Previous Level'
-    GridLayout:
+    BoxLayout:
+        orientation:'vertical'
+        GridLayoutWithGrid:
+            id: grid1
+            cols: 6
+            size_hint: 1, 0.25
+        GridLayoutWithGrid:
+            id: grid2
+            cols: 6
+            rows: 6
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.8, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+    #GridLayout:
         #canvas:
         #    Color:
         #        rgb: 150, 0, 150
         #    Rectangle:
         #        size: self.size
 
-<Gridlabel@Label>:
+#<Gridlabel@Label>:
+<GridLabel>:
     canvas.before:
         Color:
             rgba: 0, 0, 0, 1
         Rectangle:
             pos: self.pos
             size: self.size
+
+<Test>:
+    BoxLayout:
+        GridLayout:
+            id: grid1
+            cols: 6
+            size_hint: 1, 0.25
+        GridLayout:
+            id: grid2
+            cols: 6
+            rows: 6
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.8, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
