@@ -24,7 +24,7 @@ game = kivyrunner.KivyRunner()
 
 #game.setLogic(logicfield)
 
-game.loadLevel(2)
+game.loadLevel(0)
 game.loadLogic("logic2")
 game.reset()
 
@@ -32,7 +32,7 @@ run = True
 while run:
     a=raw_input("enter")    
     if a=="r":
-        game.loadLogic("logic0")
+        game.loadLogic("logic2")
 	game.reset()
     if a=="q":
         run = False

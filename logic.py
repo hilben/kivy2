@@ -93,12 +93,15 @@ class Logic:
                     self.data[x][y].blocktype = "a"
 		    self.removePointers(x,y,1)
 	        elif self.data[x][y].blocktype=="a":
+		    for i in self.find("ab"):
+	                self.data[i.x][i.y].blocktype = "a"
 	            self.data[x][y].blocktype = "ab"
 		    self.removePointers(x,y,1)
 		if self.data[x][y].blocktype == "z" and curpointer.originx != -1:
                     zx = x + 2 * (x-curpointer.originx)
 		    zy = y + 2 * (y-curpointer.originy)
-		    self.removePointers(x,y)
+		    print "ZZZZZZZZZZZZZZ"
+		    #self.removePointers(x,y)
 		    print "z: " + str(zx) + " " + str(zy)
 		    if self.isOnField(zx,zy) and  self.canPlacePointer(zx,zy):
 			self.pointers.append(pointer.Pointer(zx,zy,-1,-1))
@@ -134,6 +137,7 @@ class Logic:
                 self.pointers.append(pointer.Pointer(s.x,s.y))
             
 	def removePointers(self,x,y,maxNumber=-1):
+	    print "remove p ", str(x), str(y)
 	    removes = []
 	    for p in self.pointers:
                 if p.x == x and p.y == y:
@@ -148,7 +152,11 @@ class Logic:
              
             appendPointers = []
             removePointers = []
+           
+	   
             for p in self.pointers:
+                self.performAction(p)
+	    for p in self.pointers:
                 removePointers.append(p)
                 if self.canPlacePointer(p.x,p.y-1) and not (p.originx == p.x and p.originy == p.y-1):
                     appendPointers.append(pointer.Pointer(p.x,p.y-1,p.x,p.y))
@@ -165,8 +173,6 @@ class Logic:
             for p in appendPointers:
                 self.pointers.append(p)
 
-            for p in self.pointers:
-                self.performAction(p)
             
             for s in self.find("ab"):
                 self.pointers.append(pointer.Pointer(s.x,s.y))
