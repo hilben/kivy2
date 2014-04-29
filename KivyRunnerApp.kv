@@ -1,117 +1,171 @@
-<GridLayoutWithGrid>:
+#:import Renderer 3drendering
+
+ScreenManager:
+    StartScreen:
+    GameScreen:
+
+<StartScreen@Screen>:
+    name: 'menu'
+    BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation:'horizontal'
+            Renderer:
+            #    size_hint_y: 0.3
+            #Image:
+            #    source: 'testpic.jpg'
+            #AsyncImage:
+            #    source: 'http://wonderfulengineering.com/wp-content/uploads/2013/11/robot-wallpaper-4.jpg'
+        BoxLayout:
+            size_hint_y: 0.15
+            orientation:'horizontal'
+            Button:
+                text: 'Start Game'
+                on_press: root.manager.current = 'game'
+            Button:
+                text: 'End Game'
+                on_press: app.stop()
+
+<GameScreen@Screen>
+    name: 'game'
+    BoxLayout:
+        orientation:'horizontal'
+        
+        BoxLayout:
+            orientation:'vertical'
+            Button:
+                size_hint_y: 0.1
+                text: 'Start Menue'
+                on_press: root.manager.current = 'menu'
+            
+            GameScore:
+            GameLogic:
+            #GameMenue:
+
+        BoxLayout:
+            orientation:'vertical'
+            
+            BoxLayout:
+                orientation:'vertical'
+        
+
+<GameScore@BoxLayout>:
+    orientation:'horizontal'
+    size_hint: 1, 0.1
+    Label:
+        font_size: '20sp'
+        text: 'Level'
+    Label:
+        text: 'NR 1'
+
+<GameLogic@FloatLayout>:
+    BoxLayout:
+        orientation:'vertical'
+        GridLayout:
+            cols: 6
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 0, 0.2, 0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                id: i1
+                text: '1'
+                on_touch_down: root.copy_logic_element()
+
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0, 0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                id: i2
+                text: '2'
+
+        GridLayout:
+            rows: 6
+            cols: 6
+
+<LogicElement>:
     canvas.before:
+        Color:
+            rgba: 0.2, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Item@Label>:
+    canvas.before:
+        Color:
+            rgba: 0.2, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+
+
+<GameMenue@BoxLayout>:
+    orientation:'horizontal'
+    size_hint: 1, 0.25
+    Button:
+        text: 'Next Level'
+    Button:
+        text: 'Start'
+    Button:
+        text: 'Reset'
+    Button:
+        text: 'Previous Level'
+
+<GridLayoutWithGrid>:
+    cols: 6
+    rows: 6
+    canvas.before:
+        Color:
+            rgba: 0, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
         Color:
             rgba: 0.8, 0.2, 0.2, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
         #Line:
-            #points: (self.pos) + [self.pos[0], self.pos[0]+self.size[0]]
-            #width: 3
+        #    #points: (self.pos) + [self.pos[0], self.pos[0]+self.size[0]]
+        #    points: [0,0, 0,50, 50,50, 50,0, 0,0]
+        #    points: [100,100, 0,50, 50,50, 50,0, 0,0]
+        #    width: 3
     padding: 2
     spacing: 2
+    Label:
+        text: str(root.pos)
+    Label:
+        text: str(self.size)
 
-BoxLayout:
-    float_layout: float_layout
-    orientation:'horizontal'
-    BoxLayout:
-        orientation:'vertical'
-        BoxLayout:
-            orientation:'horizontal'
-            size_hint: 1, 0.25
-            Label:
-                font_size: '20sp'
-                text: 'Level'
-            Label:
-                text: 'NR 1'
-        GridLayout:
-            id: grid_layout
-            size_hint: 1, 1
-            #cols: int(self.width / 32)
-            cols: 5
-            padding: 2
-            spacing: 2
-            canvas.before:
-                Color:
-                    rgba: 0.2, 0.8, 0.2, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-
-        GridLayoutWithGrid:
-        #GridLayout:
-            id: float_layout
-            cols: 6
-            rows: 6
-            
-        Label:
-            #text: 'asdfasdf'
-            text: str(root.float_layout.size)
-            canvas.before:
-                Color:
-                    rgba: 0.5, 0.5, 0.5, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-        Label:
-            text: str(root.float_layout.pos)
-        BoxLayout:
-            orientation:'horizontal'
-            size_hint: 1, 0.25
-            Button:
-                text: 'Next Level'
-            Button:
-                text: 'Start'
-            Button:
-                text: 'Reset'
-            Button:
-                text: 'Previous Level'
-    BoxLayout:
-        orientation:'vertical'
-        GridLayoutWithGrid:
-            id: grid1
-            cols: 6
-            size_hint: 1, 0.25
-        GridLayoutWithGrid:
-            id: grid2
-            cols: 6
-            rows: 6
-            canvas.before:
-                Color:
-                    rgba: 0.2, 0.2, 0.8, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-
-    #GridLayout:
-        #canvas:
-        #    Color:
-        #        rgb: 150, 0, 150
-        #    Rectangle:
-        #        size: self.size
-
-#<Gridlabel@Label>:
-<GridLabel>:
-    canvas.before:
+<MyScatter>:
+    canvas:
         Color:
-            rgba: 0, 0, 0, 1
+            hsv: 0, 1, .5
         Rectangle:
-            pos: self.pos
             size: self.size
 
-<Test>:
-    BoxLayout:
-        GridLayout:
-            id: grid1
-            cols: 6
-            size_hint: 1, 0.25
-        GridLayout:
-            id: grid2
-            cols: 6
-            rows: 6
-            canvas.before:
-                Color:
-                    rgba: 0.2, 0.2, 0.8, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+    canvas.after:
+        Color:
+            hsv: .1, 1, .5
+            a: .2
+        Rectangle:
+            pos: self.pos
+            size: self.bbox[1]
+
+        Color:
+            rgb: 0, 1, 0
+        Line:
+            points: [self.x, self.top, self.right, self.top]
+        Line:
+            points: [self.x, self.y, self.x, self.top]
+        Line:
+            points: [self.center_x, self.y, self.center_x, self.top]
+        Line:
+            points: [self.x, self.center_y, self.right, self.center_y]
+
+        Line:
+            points: [self.center[0], self.center[1], self.right, self.top]
