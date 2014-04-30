@@ -80,4 +80,18 @@ class KivyRunner:
     def isLevelFinished(self):
 	    return self.field.getNumberOfCollectables()<1
 
+    def getLogicBoxes(self):
+	    logicBoxes = []
+            logicBoxes.append(logicblock.LogicBlock("image1","_"))
+            logicBoxes.append(logicblock.LogicBlock("image2","+"))
+            logicBoxes.append(logicblock.LogicBlock("image3","#"))
+            logicBoxes.append(logicblock.LogicBlock("image4","a"))
+            logicBoxes.append(logicblock.LogicBlock("image5","s"))
+            logicBoxes.append(logicblock.LogicBlock("image5","_"))
+            logicBoxes.append(logicblock.LogicBlock("image6","_"))
+            logicBoxes.append(logicblock.LogicBlock("image7","_"))
+            logicBoxes.append(logicblock.LogicBlock("image8","_"))
+            logicBoxes.append(logicblock.LogicBlock("image9","_"))
+            logicBoxes.append(logicblock.LogicBlock("image10","_"))
+	    return logicBoxes 
 
