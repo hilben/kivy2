@@ -1,8 +1,43 @@
 #:import Renderer 3drendering
+#:import random random
 
-ScreenManager:
+<OurScreenManager>:
+    
+    #Screen:
+    #    ScatterTextWidget:
+
+    #id: 123456
     StartScreen:
-    GameScreen:
+    Screen:
+        name: 'game'
+        GameLogic:
+
+    
+    #GameScreen:
+
+<ScatterTextWidget>:
+    orientation: 'vertical'
+
+    Label:
+        id: my_label_2
+        text: 'asdfasdf'
+    TextInput:
+        id: my_textinput
+        font_size: 150
+        size_hint_y: None
+        height: 200
+        text: 'default'
+        #on_text: my_label.color = [random.random() for i in xrange(3)] + [1]
+        on_text: root.change_label_colour()
+    FloatLayout:
+        Scatter:
+            Label:
+                id: my_label
+                text: my_textinput.text
+                font_size: 150
+
+
+    
 
 <StartScreen@Screen>:
     name: 'menu'
@@ -57,11 +92,29 @@ ScreenManager:
     Label:
         text: 'NR 1'
 
-<GameLogic@FloatLayout>:
+
+
+<GameLogic>:
+    BoxLayout:
+        GridLayout:
+            id: logic_blocks_grid
+            cols: 6
+    #abc: abc
+    #Button:
+    #    id: abc
+    #   text: '123'
+    #    on_press: root.test()
+
+
+<GameLogic2>:
+    #blubber5: 50
     BoxLayout:
         orientation:'vertical'
         GridLayout:
+            id: logic_blocks_grid
             cols: 6
+            Label:
+                text: str(app.blubber)
             Label:
                 canvas.before:
                     Color:
@@ -81,7 +134,7 @@ ScreenManager:
                         pos: self.pos
                         size: self.size
                 id: i2
-                text: '2'
+                text: str(app.blubber)
 
         GridLayout:
             rows: 6

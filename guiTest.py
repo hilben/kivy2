@@ -6,8 +6,9 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 
-from kivy.properties import NumericProperty, ListProperty, DictProperty
+from kivy.properties import NumericProperty, ListProperty, DictProperty, StringProperty
 
 from os import listdir
 
@@ -22,11 +23,15 @@ FloatLayout:
         GridLayout:
             id: float_layout
         MyBoxLayout:
+        #MyBoxLayout:
 
 <MyBoxLayout>:
     id: asdfasdfasdf
     blubber: 15
     a:
+    b: str(self.blubber)
+    BoxLayout:
+        id: asdf
     Label:
         text: '123'
 
@@ -39,7 +44,23 @@ def blubber2():
 
 class MyBoxLayout(BoxLayout):
     blubber = NumericProperty(1)
+    b = StringProperty()
     a = blubber2()
+
+    def __init__(self, **kwargs):  
+        super(MyBoxLayout, self).__init__(**kwargs)
+        #super(self).__init__(**kwargs)
+        
+        self.blubber = 123513
+        #for i in list:
+        print "asdsadasdasdasd" + str(self.b)
+
+        print "###################" + str(self.b)
+        self.add_widget(Label(text = 'a,'))
+        self.add_widget(Label(text = 'b,'))
+
+
+    
 
     
 
