@@ -24,7 +24,7 @@ game = kivyrunner.KivyRunner()
 
 #game.setLogic(logicfield)
 
-game.loadLevel(0)
+game.loadLevel(1)
 game.loadLogic("logic2")
 game.reset()
 

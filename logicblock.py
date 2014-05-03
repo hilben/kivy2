@@ -4,4 +4,3 @@ class LogicBlock:
         self.picture = picture
         self.blocktype = blocktype
 
-
