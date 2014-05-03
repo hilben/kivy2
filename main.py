@@ -33,7 +33,6 @@ while run:
     a=raw_input("enter")    
     if a=="r":
         game.loadLogic("logic2")
-	game.reset()
     if a=="q":
         run = False
     game.doIteration()

@@ -6,7 +6,8 @@ class Logic:
     def __init__(self, size,field):
         self.size=size
         self.field = field
-        self.data = [] 
+        self.data = []
+        self.state = 0
         for y in xrange(size):
             self.data.append([])
             for x in xrange(size):
@@ -51,8 +52,12 @@ class Logic:
             return logicblock.LogicBlock("","e")
 
     def canPlacePointer(self,x,y):
+        #print "canplace: " + str(x) + " " + str(y)
+        if len(self.getPointerAt(x,y))>3:
+            print "cant place more pointers at " + str(x) + " " + str(y) + " exceeded max of 3"
+            return False
         if self.isOnField(x,y):
-            if self.data[x][y].blocktype == "e" or self.data[x][y] == "_":
+            if self.data[x][y].blocktype == "e" or self.data[x][y].blocktype == "_":
                 return False
             else:
                 r = self.field.findRobot()
@@ -72,22 +77,70 @@ class Logic:
                     return self.field.isCollectable(r.x-1,r.y)
                 if self.data[x][y].blocktype == "cr":
                     return self.field.isCollectable(r.x+1,r.y)
+                if self.data[x][y].blocktype[0] == "s":
+                    return self.data[x][y].blocktype[1] == str(self.state)
+                return True
         else:
-            return True
+            return False
 
     def performAction(self,curpointer):
         x = curpointer.x
         y = curpointer.y
-
+        #TODO: just use an array here...
         if self.isOnField(x,y):
             if self.data[x][y].blocktype=="mu":
-                self.field.moveRobotUp()
+                self.incrDict("mu")
             if self.data[x][y].blocktype=="md":
-                self.field.moveRobotDown()
+                self.incrDict("md")
             if self.data[x][y].blocktype=="ml":
-                self.field.moveRobotLeft()
+                self.incrDict("ml")
             if self.data[x][y].blocktype=="mr":
-                self.field.moveRobotRight()
+                self.incrDict("mr")
+            if self.data[x][y].blocktype=="S+":
+                self.incrDict("S+",3)
+            if self.data[x][y].blocktype=="S-":
+                self.incrDict("S-",3)
+    
+    def incrDict(self,action,value=1):
+        if (self.actions.get(action)==None):
+            self.actions[action]=value
+        else:
+            self.actions[action]=self.actions[action]+value
+
+    def doMostUrgentAction(self):
+        currentMax = -1
+        duplicates = False
+        maxAction = "none"
+        for action, count in self.actions.iteritems():
+            if count>currentMax:
+                maxAction = action
+                currentMax = count
+                duplicates = False
+            elif count==currentMax:
+                duplicates = True
+
+        if duplicates==True or currentMax<=0:
+             maxAction = "none"
+        if maxAction=="mu":
+            self.field.moveRobotUp()
+        if maxAction=="md":
+            self.field.moveRobotDown()
+        if maxAction=="ml":
+            self.field.moveRobotLeft()
+        if maxAction=="mr":
+            self.field.moveRobotRight()
+        if maxAction=="S+":
+            self.incrState()
+        if maxAction=="S-":
+            self.decrState()
+   
+    def incrState(self):
+        self.state = self.state + 1 % 10
+        self.pointers = []
+
+    def decrState(self):
+        self.state = self.state - 1 % 10
+        self.pointers = []
 
     def find(self,fieldtype):
         foundfields = []
@@ -111,6 +164,7 @@ class Logic:
     def reset(self):
         print "LOGIC: reset logic..."
         self.pointers = []
+        self.state = 0
 
     def start(self):
         self.reset()
@@ -132,6 +186,18 @@ class Logic:
     def doIteration(self):
         appendPointers = []
         removePointers = []
+        self.actions = {}
+
+        print "pointer before append:"
+        self.printPointer()
+
+        #Perform actions at place with active pointers
+        for p in self.pointers:
+            self.performAction(p)
+        self.doMostUrgentAction()
+        print self.actions
+
+        #send pointers to neighbours
         for p in self.pointers:
             removePointers.append(p)
             if self.canPlacePointer(p.x,p.y-1) and not (p.originx == p.x and p.originy == p.y-1):
@@ -142,14 +208,22 @@ class Logic:
                 appendPointers.append(pointer.Pointer(p.x-1,p.y,p.x,p.y))
             if self.canPlacePointer(p.x+1,p.y) and not (p.originx == p.x+1 and p.originy == p.y):
                 appendPointers.append(pointer.Pointer(p.x+1,p.y,p.x,p.y))
+        #remove all pointers of previous iteration
         for p in removePointers:
             self.pointers.remove(p)
-
+        #add the pointers which are added to neighbours
         for p in appendPointers:
             self.pointers.append(p)
-
-        for p in self.pointers:
-            self.performAction(p)
-        for s in self.find("ab"):
+        #spawn new pointers
+        for s in self.find("a"):
             self.pointers.append(pointer.Pointer(s.x,s.y))
+        
+        #remove pointers of fields  with too many pointers
+        for y in xrange(self.size):
+            for x in xrange(self.size):
+                if len(self.getPointerAt(x,y))>3:
+                    print "removing pointers because too crowded at" + str(x) + " " + str(y)
+                    self.removePointers(x,y,len(self.getPointerAt(x,y))-3)
 
+        print "pointer after update"
+        self.printPointer()

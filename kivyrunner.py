@@ -14,15 +14,17 @@ class KivyRunner:
     def loadLevel(self,number):
         self.level = field.Field(10)
         self.currentLevel = number
-        f = open("level"+str(number),"r")
+        levelname = "level"+str(number)
+        print "loading level: " + levelname
+        f = open(levelname,"r")
         level = field.Field(10)
         x,y = 0,0
         for line in f:
             x = 0
-        for s in line:
-            if (s!="\n"):
-                self.level.setBlock(x,y,s)
-            x += 1
+            for s in line:
+                if (s!="\n"):
+                    self.level.setBlock(x,y,s)
+                x += 1
             y +=1
 
     #debug method to load logic out of file
@@ -76,7 +78,7 @@ class KivyRunner:
         except field.FieldException as e:
             print "Level was reseted`because: "
             print str(e)
-        self.reset()
+            self.reset()
 
     def isLevelFinished(self):
         return self.field.getNumberOfCollectables()<1
