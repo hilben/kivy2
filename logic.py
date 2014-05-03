@@ -83,7 +83,7 @@ class Logic:
         else:
             return False
 
-    def performAction(self,curpointer):
+    def countAction(self,curpointer):
         x = curpointer.x
         y = curpointer.y
         #TODO: just use an array here...
@@ -100,7 +100,9 @@ class Logic:
                 self.incrDict("S+",3)
             if self.data[x][y].blocktype=="S-":
                 self.incrDict("S-",3)
+   
     
+
     def incrDict(self,action,value=1):
         if (self.actions.get(action)==None):
             self.actions[action]=value
@@ -135,11 +137,11 @@ class Logic:
             self.decrState()
    
     def incrState(self):
-        self.state = self.state + 1 % 10
+        self.state = (self.state + 1) % 10
         self.pointers = []
 
     def decrState(self):
-        self.state = self.state - 1 % 10
+        self.state = (self.state - 1) % 10
         self.pointers = []
 
     def find(self,fieldtype):
@@ -190,10 +192,11 @@ class Logic:
 
         print "pointer before append:"
         self.printPointer()
-
+        
+        print "current state:" + str(self.state)
         #Perform actions at place with active pointers
         for p in self.pointers:
-            self.performAction(p)
+            self.countAction(p)
         self.doMostUrgentAction()
         print self.actions
 
