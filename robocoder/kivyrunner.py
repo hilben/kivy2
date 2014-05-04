@@ -85,16 +85,36 @@ class KivyRunner:
 
     def getLogicBoxes(self):
         logicBoxes = []
-        logicBoxes.append(logicblock.LogicBlock("image1","_"))
-        logicBoxes.append(logicblock.LogicBlock("image2","+"))
-        logicBoxes.append(logicblock.LogicBlock("image3","#"))
-        logicBoxes.append(logicblock.LogicBlock("image4","a"))
-        logicBoxes.append(logicblock.LogicBlock("image5","s"))
-        logicBoxes.append(logicblock.LogicBlock("image5","_"))
-        logicBoxes.append(logicblock.LogicBlock("image6","_"))
-        logicBoxes.append(logicblock.LogicBlock("image7","_"))
-        logicBoxes.append(logicblock.LogicBlock("image8","_"))
-        logicBoxes.append(logicblock.LogicBlock("image9","_"))
-        logicBoxes.append(logicblock.LogicBlock("image10","_"))
+        logicBoxes.append(logicblock.LogicBlock("block_blank","_"))
+        logicBoxes.append(logicblock.LogicBlock("logic_wu.png","wu"))
+        logicBoxes.append(logicblock.LogicBlock("logic_wd.png","wd"))
+        logicBoxes.append(logicblock.LogicBlock("logic_wl.png","wl"))
+        logicBoxes.append(logicblock.LogicBlock("logic_wr.png","wr"))
+
+        logicBoxes.append(logicblock.LogicBlock("logic_cu.png","cu"))
+        logicBoxes.append(logicblock.LogicBlock("logic_cd.png","cd"))
+        logicBoxes.append(logicblock.LogicBlock("logic_cl.png","cl"))
+        logicBoxes.append(logicblock.LogicBlock("logic_cr.png","cr"))
+
+        logicBoxes.append(logicblock.LogicBlock("logic_spawn.png","s"))
+        logicBoxes.append(logicblock.LogicBlock("logic_aspawn.png","a"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_up.png","s+"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_down.png","s-"))
+
+        logicBoxes.append(logicblock.LogicBlock("logic_s0.png","s0"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s1.png","s1"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s2.png","s2"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s3.png","s3"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s4.png","s4"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s5.png","s5"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s6.png","s6"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s7.png","s7"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s8.png","s8"))
+        logicBoxes.append(logicblock.LogicBlock("logic_s9.png","s9"))
+
+        logicBoxes.append(logicblock.LogicBlock("logic_mu.png","mu"))
+        logicBoxes.append(logicblock.LogicBlock("logic_md.png","md"))
+        logicBoxes.append(logicblock.LogicBlock("logic_ml.png","ml"))
+        logicBoxes.append(logicblock.LogicBlock("logic_mr.png","mr"))
         return logicBoxes
 
