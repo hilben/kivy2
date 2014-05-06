@@ -90,7 +90,7 @@ class ScatterTextWidget(BoxLayout):
         #print('++++++++++++++'+str(self.ids))
 
 
-class KivyRunnerApp(App):
+class KivyApp(App):
     def build(self):
         scr = OurScreenManager()
         #print('++++++++++++++'+str(scr.ids))
