@@ -29,6 +29,9 @@ from os import listdir
 from kivy.uix.widget import Widget
 from kivy.uix.scatter import Scatter
 
+#from kivyrunner import Scatter
+
+
 IMAGEDIR = 'images/'
 
 IMAGES = filter(
@@ -36,58 +39,108 @@ IMAGES = filter(
     listdir(IMAGEDIR))
 
 kv = '''
-<DnDLayout>:
-    list_of_img_dirs: app.list_of_img_dirs
+ScreenManager:
+    StartScreen:
+    GameScreen:
 
+<StartScreen@Screen>:
+    name: 'menu'
+    BoxLayout:
+        orientation:'vertical'
+        BoxLayout:
+            orientation:'horizontal'
+            #Renderer:
+        BoxLayout:
+            size_hint_y: 0.15
+            orientation:'horizontal'
+            Button:
+                text: 'Start Game'
+                on_press: root.manager.current = 'game'
+            Button:
+                text: 'End Game'
+                on_press: app.stop()
+
+<GameScreen@Screen>
+    name: 'game'
     BoxLayout:
         orientation: 'horizontal'
         BoxLayout:
-            orientation: 'vertical'
-            GridLayout:
-                canvas.before:
-                    Color:
-                        rgb: (255, 0, 0)
-                    Rectangle:  
-                        pos: self.pos
-                        size: self.size
-                id: grid_1
-                cols: 6
-                rows: 3
-                padding: 2
-                spacing: 2
-
-            FloatLayout:
-                size_hint_y: 0.05
-                canvas.before:
-                    Color:
-                        rgb: (0, 0, 0)
-                    Rectangle:  
-                        pos: self.pos
-                        size: self.size
-
-            GridLayout:
-                canvas.before:
-                    Color:
-                        rgb: (255, 0, 0)
-                    Rectangle:  
-                        pos: self.pos
-                        size: self.size
-                id: grid_2
-                cols: 6
-                rows: 6
-                padding: 2
-                spacing: 2
-        BoxLayout:
-            BlackBoxLayout:
+            orientation:'vertical'
+            Button:
+                size_hint_y: 0.15
+                text: 'Go to Menu'
+                on_press: root.manager.current = 'menu'
+            BoxLayout:
+                size_hint_y: 0.15
+                orientation: 'horizontal'
                 Label:
-                    text: 'test'
+                    text: 'Level'
+                Label:
+                    text: '1, but make ma change!'
+            DnDLayout:
+            BoxLayout:
+                size_hint_y: 0.15
+                orientation: 'horizontal'
+                Button:
+                    text: 'Start'
+                Button:
+                    text: 'Reset Logic'
+        FloatLayout:
+            size_hint_x: 0.05
+        GameGrid:
+            Label:
 
+
+<GameGrid>:
+    canvas.before:
+        Color:
+            rgb: (0, 0, 50)
+        Rectangle:  
+            pos: self.pos
+            size: self.size
+    cols: 10
+    rows: 10
+    padding: 2
+    spacing: 2
+
+<DnDLayout>:
+    list_of_img_dirs: app.list_of_img_dirs
+    BoxLayout:
+        orientation: 'vertical'
+        GridLayout:
+            canvas.before:
+                Color:
+                    rgb: (0, 0, 0)
+                Rectangle:  
+                    pos: self.pos
+                    size: self.size
+            id: grid_1
+            cols: 6
+            rows: 3
+            padding: 2
+            spacing: 2
+
+        FloatLayout:
+            size_hint_y: 0.05
+
+        GridLayout:
+            canvas.before:
+                Color:
+                    rgb: (0, 0, 0)
+                Rectangle:  
+                    pos: self.pos
+                    size: self.size
+            id: grid_2
+            cols: 6
+            rows: 6
+            padding: 2
+            spacing: 2
 
 <BlackBoxLayout>:
     #size:(32, 32)
     canvas.before:
         Color:
-            rgb: (0, 0, 0)
+            rgb: (90, 90, 90)
         Rectangle:  
             pos: self.pos
             size: self.size
@@ -110,6 +163,20 @@ kv = '''
     #on_touch_down: root.create_copy()
 
 '''
+
+class GameGrid(GridLayout):
+    def __init__(self, **kwargs):  
+        super(GameGrid, self).__init__(**kwargs)
+        Clock.schedule_once(self.populate_grid)
+
+    def populate_grid(self, abc):
+        n = self.cols*self.rows-5
+
+        for i in range(n):
+            b = BlackBoxLayout()
+            #b.add_widget(Label(text='1'))
+            self.add_widget(b)
+
 
 class BlackBoxLayout(BoxLayout):
     pass
@@ -136,37 +203,22 @@ class Item(Image):
 
         if touch.grab_current == self:
             self.scatter.center = touch.pos
-            
-    #         if grid_layout.collide_point(*touch.pos):
-    #             grid_layout.remove_widget(self)
-    #             float_layout.remove_widget(self)
-
-    #             for i, c in enumerate(grid_layout.children):
-    #                 if c.collide_point(*touch.pos):
-    #                     grid_layout.add_widget(self, i - 1)
-    #                     break
-    #             else:
-    #                 grid_layout.add_widget(self)
-    #         else:
-    #             if self.parent == grid_layout:
-    #                 grid_layout.remove_widget(self)
-    #                 float_layout.add_widget(self)
-
-    #             self.center = touch.pos
-
-    #     return super(DraggableImage, self).on_touch_move(touch, *args)
     
     def on_touch_up(self, touch, *args):
         grid_1 = self.dnd_layout.ids.grid_1
         grid_2 = self.dnd_layout.ids.grid_2
         
+        check = False
+
         if touch.grab_current == self:
             for black_box in grid_2.children:
                 #print(black_box)
                 if black_box.collide_point(*touch.pos):
+                    #if black_box.children
                     black_box.add_widget(Image(source = self.source))
                     self.dnd_layout.remove_widget(self.scatter)
-            if not grid_2.collide_point(*touch.pos):
+                    check = True
+            if not grid_2.collide_point(*touch.pos) or check==False:
                 self.dnd_layout.remove_widget(self.scatter)
 
     #         self.app.root.remove_widget(self.img)
@@ -205,14 +257,12 @@ class DnDApp(App):
     list_of_img_dirs = ListProperty()
 
     def build(self):
-        
+        c = Builder.load_string(kv)
 
         for i in IMAGES:
             self.list_of_img_dirs.append(IMAGEDIR + i)
             
-        Builder.load_string(kv)
-
-        return DnDLayout()
+        return c
 
 if __name__ == "__main__":
     DnDApp().run()
