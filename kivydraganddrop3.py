@@ -116,12 +116,6 @@ class BlackBoxLayout(BoxLayout):
 
 class Item(Image):
     dnd_layout = ObjectProperty(None)
-    
-    def on_img(self, *args):
-        self.clear_widgets()
-
-        if self.img:
-            Clock.schedule_once(lambda *x: self.add_widget(self.img), 0)
 
     def on_touch_down(self, touch, *args):
         if self.collide_point(*touch.pos): #if it is touched on
@@ -141,10 +135,7 @@ class Item(Image):
         grid_2 = self.dnd_layout.ids.grid_2
 
         if touch.grab_current == self:
-            pass
-            #self.scatter.center = touch.pos
-        else:
-            pass
+            self.scatter.center = touch.pos
             
     #         if grid_layout.collide_point(*touch.pos):
     #             grid_layout.remove_widget(self)
