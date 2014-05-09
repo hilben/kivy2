@@ -92,6 +92,7 @@ ScreenManager:
 
 
 <GameGrid>:
+    kivyrunner: app.kivyrunner
     canvas.before:
         Color:
             rgb: (0, 0, 50)
@@ -104,7 +105,7 @@ ScreenManager:
     spacing: 2
 
 <DnDLayout>:
-    list_of_img_dirs: app.list_of_img_dirs
+    kivyrunner: app.kivyrunner
     BoxLayout:
         orientation: 'vertical'
         GridLayout:
@@ -145,8 +146,6 @@ ScreenManager:
             pos: self.pos
             size: self.size
 
-<Grid>:
-
 <MyLabel>:
     canvas.before:
         Color:
@@ -162,7 +161,16 @@ ScreenManager:
 
     #on_touch_down: root.create_copy()
 
+<Blocks>:
+    size: (40, 40)
+    size_hint: (None, None)
+
+<Item>:
+    size: (40, 40)
+    size_hint: (None, None)
 '''
+class Blocks(Image):
+    pass
 
 class GameGrid(GridLayout):
     def __init__(self, **kwargs):  
@@ -170,12 +178,44 @@ class GameGrid(GridLayout):
         Clock.schedule_once(self.populate_grid)
 
     def populate_grid(self, abc):
-        n = self.cols*self.rows-5
+        self.clear_widgets()
+        # n = 100
 
-        for i in range(n):
-            b = BlackBoxLayout()
-            #b.add_widget(Label(text='1'))
-            self.add_widget(b)
+        # for i in range(n):
+        #     b = BlackBoxLayout()
+        #     b.add_widget(Label(text=str(i)))
+        #     #self.add_widget(b)
+        #     self.add_widget(Label(text=str(i)))
+        self.kivyrunner.loadLevel(1)
+
+        level = self.kivyrunner.level
+
+        for x in xrange(level.size):
+            for y in xrange(level.size):
+                block = level.data[x][y]
+
+                print('#####################' + str(block))
+
+                if block == '_':
+                    source = IMAGEDIR + 'block_blank.png'
+
+                elif block == '+':
+                    source = IMAGEDIR + 'block_collectable.png'
+
+                elif block == 'X':
+                    source = IMAGEDIR + 'block_death.png'
+
+                elif block == '#':
+                    source = IMAGEDIR + 'block_wall.png'
+
+                elif block == 'M':
+                    source = IMAGEDIR + 'block_robot.png'
+
+                else:
+                    print('################ error - unknown item')
+                    break
+                
+                self.add_widget(Blocks(source = source))
 
 
 class BlackBoxLayout(BoxLayout):
@@ -235,16 +275,19 @@ class DnDLayout(FloatLayout):
         Clock.schedule_once(self.populate_grids)
 
     def populate_grids(self, abc):
+
         grid_1 = self.ids.grid_1
         grid_2 = self.ids.grid_2
 
-        for img_dir in self.list_of_img_dirs:
+        grid_1.clear_widgets()
+        logic_boxes = self.kivyrunner.getLogicBoxes()
+
+        for logic_box in logic_boxes:
             #item = Item(source=img_dir, size=(32, 32), size_hint=(None, None), dnd_layout = self)
-            item = Item(source=img_dir, dnd_layout = self)
+            item = Item(source=IMAGEDIR + logic_box.picture, dnd_layout = self)
             b = BlackBoxLayout()
             b.add_widget(item)
             grid_1.add_widget(b)
-            #grid_1.add_widget(Label(text=str(k)))
 
         n = grid_2.cols*grid_2.rows
 
@@ -255,9 +298,11 @@ class DnDLayout(FloatLayout):
 
 class DnDApp(App):
     list_of_img_dirs = ListProperty()
+    kivyrunner = ObjectProperty()
 
     def build(self):
         c = Builder.load_string(kv)
+        self.kivyrunner = KivyRunner()
 
         for i in IMAGES:
             self.list_of_img_dirs.append(IMAGEDIR + i)
