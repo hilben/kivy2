@@ -1,0 +1,3 @@
+title=KivyRobot
+author=Benjamin Hiltbolt und Nikolaus Fleischhacker
+orientation=landscape
