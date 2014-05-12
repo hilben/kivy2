@@ -98,8 +98,8 @@ class KivyRunner:
 
         logicBoxes.append(logicblock.LogicBlock("logic_spawn.png","s"))
         logicBoxes.append(logicblock.LogicBlock("logic_aspawn.png","a"))
-        logicBoxes.append(logicblock.LogicBlock("logic_state_up.png","s+"))
-        logicBoxes.append(logicblock.LogicBlock("logic_state_down.png","s-"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_up.png","S+"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_down.png","S-"))
 
         logicBoxes.append(logicblock.LogicBlock("logic_s0.png","s0"))
         logicBoxes.append(logicblock.LogicBlock("logic_s1.png","s1"))

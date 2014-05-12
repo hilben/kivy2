@@ -300,7 +300,8 @@ class Item(Image):
     blocktype = StringProperty()
 
     def on_touch_down(self, touch, *args):
-        if self.collide_point(*touch.pos): #if it is touched on
+	global runRobot
+        if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
             touch.grab(self)
             #self.remove_widget(self)
             self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
