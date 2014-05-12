@@ -65,41 +65,43 @@ ScreenManager:
     kivyrunner: app.kivyrunner
     name: 'game'
     BoxLayout:
-        orientation: 'horizontal'
+        orientation: 'vertical'
         BoxLayout:
-            size_hint_x: 0.35
-            orientation:'vertical'
+            orientation: 'horizontal'
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x: 0.5
+                #Label:
+                DnDLayout:
+                    id: dnd
+                #Label:
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x: 0.5
+                Label:
+                GameField:
+                    id: game_field
+                Label:
+        BoxLayout:
+            size_hint_y: 0.1
+            orientation: 'horizontal'
             Button:
-                size_hint_y: 0.15
-                text: 'Go to Menu'
+                text: 'Home'
                 on_press: root.manager.current = 'menu'
-            BoxLayout:
-                size_hint_y: 0.15
-                orientation: 'horizontal'
-                Label:
-                    text: 'Level'
-                Label:
-                    #text: root.currentLevel
-            DnDLayout:
-                id: dnd
-            BoxLayout:
-                size_hint_y: 0.15
-                orientation: 'horizontal'
-                Button:
-                    text: 'Start'
-                    on_press: root.start_game()
-                Button:
-                    text: 'Reset Logic'
-                    on_press: dnd.reset_logic()
-        #FloatLayout:
-        #    size_hint_x: 0.01
-        BoxLayout:
-            orientation:'vertical'
-            size_hint_x: 0.6
-            Label:
-            GameField:
-                id: game_field
-            Label:
+            Button:
+                text: 'Go'
+                on_press: root.start_game()
+            Button:
+                text: 'Stop'
+                #on_press: dnd.reset_logic()
+            Button:
+                text: 'Reset'
+                on_press: dnd.reset_logic()
+            Button:
+                text: 'Previous'
+            Button:
+                text: 'Next'
+
 
 <GameField>:
     kivyrunner: app.kivyrunner
@@ -112,6 +114,8 @@ ScreenManager:
 
 <DnDLayout>:
     kivyrunner: app.kivyrunner
+    size_hint: (None, None)
+    size: min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height)
     BoxLayout:
         orientation: 'vertical'
         GridLayout:
