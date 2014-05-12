@@ -8,6 +8,7 @@ class Logic:
         self.field = field
         self.data = []
         self.state = 0
+	self.pointers = []
         for y in xrange(size):
             self.data.append([])
             for x in xrange(size):
@@ -57,7 +58,7 @@ class Logic:
             print "cant place more pointers at " + str(x) + " " + str(y) + " exceeded max of 3"
             return False
         if self.isOnField(x,y):
-            if self.data[x][y].blocktype == "e" or self.data[x][y].blocktype == "_":
+            if self.data[x][y].blocktype == "e" or self.data[x][y].blocktype == "_" or self.data[x][y] == "s":
                 return False
             else:
                 r = self.field.findRobot()
@@ -77,7 +78,7 @@ class Logic:
                     return self.field.isCollectable(r.x-1,r.y)
                 if self.data[x][y].blocktype == "cr":
                     return self.field.isCollectable(r.x+1,r.y)
-                if self.data[x][y].blocktype[0] == "s":
+                if self.data[x][y].blocktype[0] == "s" and len(self.data[x][y].blocktype)>1:
                     return self.data[x][y].blocktype[1] == str(self.state)
                 return True
         else:

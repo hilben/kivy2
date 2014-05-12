@@ -9,7 +9,7 @@ class KivyRunner:
 
     def __init__(self):
         self.level = field.Field(10)
-
+ 	self.logic = logic.Logic(6,self.level) 	
 
     def loadLevel(self,number):
         self.level = field.Field(10)
@@ -81,7 +81,7 @@ class KivyRunner:
             self.reset()
 
     def isLevelFinished(self):
-        return self.field.getNumberOfCollectables()<1
+        return self.level.getNumberOfCollectables()<1
 
     def getLogicBoxes(self):
         logicBoxes = []

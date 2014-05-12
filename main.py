@@ -24,6 +24,7 @@ from kivy.lang import Builder
 from kivy.uix.image import Image
 
 from kivyrunner import KivyRunner
+from logic import Logic
 
 from os import listdir
 
@@ -78,7 +79,7 @@ ScreenManager:
                 Label:
                     text: 'Level'
                 Label:
-                    #text: root.kivyrunner.currentLevel
+                    #text: root.currentLevel
             DnDLayout:
                 id: dnd
             BoxLayout:
@@ -163,64 +164,77 @@ ScreenManager:
     #size: (40, 40)
     #size_hint: (None, None)
 '''
+
+
+runRobot = False
+
 class GameScreen(Screen):
+
     def start_game(self):
         logic_grid = self.ids.dnd.ids.grid_2
         
-        logic = [obj() for obj in [list]*6]
+	size = logic_grid.rows
+	logic = []
+	
+        for y in xrange(size):
+            logic.append([])
+            for x in xrange(size):
+                logic[y].append(LogicBlock("","_"))
 
-        r = 0
-        c = 0
+	index = size * size - 1
 
         for child in logic_grid.children:
-            
-
                 if not child.children:
-                    #print('oooooooooooooooooooooooo'+'- empty')
                     picture = 'block_blank.png'
                     blocktype = '_'
                     logic_block = LogicBlock(picture, blocktype)
                 else:
-                     #print('oooooooooooooooooooooooo'+str(child.children[0]))
                     picture = child.children[0].source
                     blocktype = child.children[0].blocktype
                     logic_block = LogicBlock(picture, blocktype)
 
-                logic[r].append(logic_block)
 
-                if c <= 5:
-                    c += 1
+                print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
+                logic[((index%size) )][int(index/size)] = logic_block
+		index-=1
 
-                else:
-                    c = 0
-                    r += 1
+        for y in xrange(size):
+            for x in xrange(size):
+                print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
 
-        print('xxxxxxxxxxxxxxxxxx'+str(logic))
-        
+	logicobject = Logic(size,self.kivyrunner.level)
+      	logicobject.data = logic 
+	logicobject.printBlocks()
+	self.kivyrunner.setLogic(logicobject)
+	self.kivyrunner.logic.printBlocks()
+	
+        dt = 1#TODO
 
-        ##### BAUSTELLE!!!!!!!!!!!####################################################################################
+	global runRobot
+	runRobot = True
+        Clock.schedule_interval(self.iterate_game, dt)
 
-        self.kivyrunner.setLogic(logic)
+    def iterate_game(self,time):
 
-        #http://kivy.org/docs/api-kivy.clock.html
-        dt = 1
-        Clock.schedule_interval(iterate_game, dt)
-
-        ####################################################################################
-
-    def iterate_game(self):
-
+	global runRobot
+	if runRobot == False:
+	    print "runRobot == false"
+	    Clock.unschedule(self.iterate_game)
+	
+	print "iterate!"
+	self.kivyrunner.logic.printBlocks()
         #update level
         game_field = self.ids.game_field
 
         level = self.kivyrunner.level
         level.data = self.kivyrunner.getFieldData()
 
+	game_field.clear_widgets()	
         game_field.populate_grid(level)
         #do iteration
-        self.kivyrunner.doIteration
+        self.kivyrunner.doIteration()
         #level abbrechen
-        if isLevelFinished():
+        if self.kivyrunner.isLevelFinished():
             return False
 
 class Blocks(Image):
@@ -238,20 +252,20 @@ class GameField(GridLayout):
         self.populate_grid(level)
 
     def populate_grid(self, level):
-        for x in xrange(level.size):
-            for y in xrange(level.size):
+        for y in xrange(level.size):
+            for x in xrange(level.size):
                 block = level.data[x][y]
 
                 if block == '_':
                     source = IMAGEDIR + 'block_blank.png'
 
-                elif block == '+':
+                elif block == '#':
                     source = IMAGEDIR + 'block_collectable.png'
 
                 elif block == 'X':
                     source = IMAGEDIR + 'block_death.png'
 
-                elif block == '#':
+                elif block == '+':
                     source = IMAGEDIR + 'block_wall.png'
 
                 elif block == 'M':
@@ -360,9 +374,12 @@ class DnDLayout(RelativeLayout):
             grid_2.add_widget(b)
 
     def reset_logic(self):
+	global runRobot
+	runRobot = False
         grid_2 = self.ids.grid_2
         for child in grid_2.children:
             child.clear_widgets()
+	self.kivyrunner.reset()	
 
 class DnDApp(App):
     list_of_img_dirs = ListProperty()
