@@ -252,13 +252,12 @@ class GameScreen(Screen):
 
             x = int(i%6)
             y = int(i/6)
-            print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
-            
-            #len()
 
-            if child.children:
+            pointer = self.kivyrunner.logic.getPointerAt(x,y)
+            if len(pointer) == 0:
 
-                child.children[0].draw_pointer('*')
+                if child.children:
+                    child.children[0].draw_pointer('*')
             i+=1
 
 
@@ -301,18 +300,8 @@ class GameField(GridLayout):
                     break
 
                 a = (min(self.size) - 2*min(self.padding) - (10-1)*min(self.spacing))/10
-                #print('################'+str(a))
-                #a=30
-                #self.add_widget(Blocks(source = source, size = (a, a), size_hint = (None, None)))
                 b = Blocks(source = source, size_hint = (0.1, 0.1))
                 self.add_widget(b)
-                #b.size = [min(b.size)]*2
-
-        # make a quadric grid
-        
-        #self.size = [min(self.size)]*2
-        #self.size_hint = (None, None)
-
 
 class BlackBoxLayout(BoxLayout):
     pass
@@ -325,16 +314,17 @@ class Item(Image):
     dnd_layout = ObjectProperty(None)
     blocktype = StringProperty()
 
+    def __init__(self, **kwargs):  
+        super(Item, self).__init__(**kwargs)
+        is_pointed_at = False
+
     def on_touch_down(self, touch, *args):
         #global runRobot
         if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
             touch.grab(self)
-            #self.remove_widget(self)
             self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
             self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
             self.dnd_layout.add_widget(self.scatter)
-            #self.center = touch.pos
-            #self.img.center = touch.pos
             return True
 
         return super(Item, self).on_touch_down(touch, *args)
@@ -357,9 +347,7 @@ class Item(Image):
 
         if touch.grab_current == self:
             for black_box in grid_2.children:
-                #print(black_box)
                 if black_box.collide_point(*touch.pos):
-                    #if black_box.children
                     black_box.clear_widgets()
                     black_box.add_widget(ItemMove(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
                     self.dnd_layout.remove_widget(self.scatter)
@@ -368,29 +356,36 @@ class Item(Image):
                 self.dnd_layout.remove_widget(self.scatter)
 
     def draw_pointer(self, pointer):
-        if pointer == '*':
+        if pointer == True and self.is_pointed_at == False:
             r = 0
             g = 1
             b = 0
+            d = 0.2
 
-        if pointer == '**':
+            self.is_pointed_at = True
+
+            with self.canvas:
+                self.color = Color(r, g, b, .2, mode='rgba')
+                Rectangle(pos=self.pos, size=self.size)
+
+        if pointer == False:
             r = 0
             g = 0
             b = 1
+            d = 0.2
 
         if pointer == '***':
             r = 1
             g = 0
             b = 0
+            d = 0.2
 
-        with self.canvas.after:
-            Color(r, g, b, .5, mode='rgba')
-            Rectangle(pos=self.pos, size=self.size)
+
+        #self.canvas.clear()
+        #with self.canvas.after:
+        
 
 class ItemMove(Item):
-    # def on_touch_down(self, touch, *args):
-    #     self.draw_pointer('*')
-
     def on_touch_down(self, touch, *args):
         if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
             touch.grab(self)
