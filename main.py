@@ -13,6 +13,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.relativelayout import RelativeLayout
 
+from kivy.graphics.vertex_instructions import Rectangle
+from kivy.graphics.context_instructions import Color
+
 
 from kivy.uix.button import Button
 
@@ -24,6 +27,7 @@ from kivy.lang import Builder
 from kivy.uix.image import Image
 
 from kivyrunner import KivyRunner
+from logic import Logic
 
 from os import listdir
 
@@ -64,41 +68,43 @@ ScreenManager:
     kivyrunner: app.kivyrunner
     name: 'game'
     BoxLayout:
-        orientation: 'horizontal'
+        orientation: 'vertical'
         BoxLayout:
-            size_hint_x: 0.35
-            orientation:'vertical'
+            orientation: 'horizontal'
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x: 0.5
+                #Label:
+                DnDLayout:
+                    id: dnd
+                #Label:
+            BoxLayout:
+                orientation:'vertical'
+                size_hint_x: 0.5
+                Label:
+                GameField:
+                    id: game_field
+                Label:
+        BoxLayout:
+            size_hint_y: 0.1
+            orientation: 'horizontal'
             Button:
-                size_hint_y: 0.15
-                text: 'Go to Menu'
+                text: 'Home'
                 on_press: root.manager.current = 'menu'
-            BoxLayout:
-                size_hint_y: 0.15
-                orientation: 'horizontal'
-                Label:
-                    text: 'Level'
-                Label:
-                    #text: root.kivyrunner.currentLevel
-            DnDLayout:
-                id: dnd
-            BoxLayout:
-                size_hint_y: 0.15
-                orientation: 'horizontal'
-                Button:
-                    text: 'Start'
-                    on_press: root.start_game()
-                Button:
-                    text: 'Reset Logic'
-                    on_press: dnd.reset_logic()
-        #FloatLayout:
-        #    size_hint_x: 0.01
-        BoxLayout:
-            orientation:'vertical'
-            size_hint_x: 0.6
-            Label:
-            GameField:
-                id: game_field
-            Label:
+            Button:
+                text: 'Go'
+                on_press: root.start_game()
+            Button:
+                text: 'Stop'
+                #on_press: dnd.reset_logic()
+            Button:
+                text: 'Reset'
+                on_press: dnd.reset_logic()
+            Button:
+                text: 'Previous'
+            Button:
+                text: 'Next'
+
 
 <GameField>:
     kivyrunner: app.kivyrunner
@@ -111,6 +117,8 @@ ScreenManager:
 
 <DnDLayout>:
     kivyrunner: app.kivyrunner
+    size_hint: (None, None)
+    size: min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height)
     BoxLayout:
         orientation: 'vertical'
         GridLayout:
@@ -163,65 +171,88 @@ ScreenManager:
     #size: (40, 40)
     #size_hint: (None, None)
 '''
+
+
+runRobot = False
+
 class GameScreen(Screen):
+
     def start_game(self):
         logic_grid = self.ids.dnd.ids.grid_2
         
-        logic = [obj() for obj in [list]*6]
+        size = logic_grid.rows
+        logic = []
 
-        r = 0
-        c = 0
+        for y in xrange(size):
+            logic.append([])
+            for x in xrange(size):
+                logic[y].append(LogicBlock("","_"))
+
+        index = size * size - 1
 
         for child in logic_grid.children:
-            
-
                 if not child.children:
-                    #print('oooooooooooooooooooooooo'+'- empty')
                     picture = 'block_blank.png'
                     blocktype = '_'
                     logic_block = LogicBlock(picture, blocktype)
                 else:
-                     #print('oooooooooooooooooooooooo'+str(child.children[0]))
                     picture = child.children[0].source
                     blocktype = child.children[0].blocktype
                     logic_block = LogicBlock(picture, blocktype)
 
-                logic[r].append(logic_block)
 
-                if c <= 5:
-                    c += 1
+                print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
+                logic[((index%size) )][int(index/size)] = logic_block
+        index-=1
 
-                else:
-                    c = 0
-                    r += 1
+        for y in xrange(size):
+            for x in xrange(size):
+                print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
 
-        print('xxxxxxxxxxxxxxxxxx'+str(logic))
+        logicobject = Logic(size,self.kivyrunner.level)
+        logicobject.data = logic 
+        logicobject.printBlocks()
+        self.kivyrunner.setLogic(logicobject)
+        self.kivyrunner.logic.printBlocks()
+
+        dt = 1#TODO
+
+        global runRobot
+        runRobot = True
+        Clock.schedule_interval(self.iterate_game, dt)
+
+    def iterate_game(self,time):
+
+        global runRobot
+        if runRobot == False:
+            print "runRobot == false"
+            Clock.unschedule(self.iterate_game)
         
-
-        ##### BAUSTELLE!!!!!!!!!!!####################################################################################
-
-        self.kivyrunner.setLogic(logic)
-
-        #http://kivy.org/docs/api-kivy.clock.html
-        dt = 1
-        Clock.schedule_interval(iterate_game, dt)
-
-        ####################################################################################
-
-    def iterate_game(self):
-
+        print "iterate!"
+        self.kivyrunner.logic.printBlocks()
         #update level
         game_field = self.ids.game_field
 
         level = self.kivyrunner.level
         level.data = self.kivyrunner.getFieldData()
 
+        game_field.clear_widgets()	
         game_field.populate_grid(level)
         #do iteration
-        self.kivyrunner.doIteration
+        self.kivyrunner.doIteration()
         #level abbrechen
-        if isLevelFinished():
+        if self.kivyrunner.isLevelFinished():
             return False
+
+        #draw pointers
+        logic_grid = self.ids.dnd.ids.grid_2
+
+        for child in logic_grid.children:
+
+            if child.children:
+
+                child.children[0].draw_pointer('*')
+
 
 class Blocks(Image):
     pass
@@ -238,20 +269,20 @@ class GameField(GridLayout):
         self.populate_grid(level)
 
     def populate_grid(self, level):
-        for x in xrange(level.size):
-            for y in xrange(level.size):
+        for y in xrange(level.size):
+            for x in xrange(level.size):
                 block = level.data[x][y]
 
                 if block == '_':
                     source = IMAGEDIR + 'block_blank.png'
 
-                elif block == '+':
+                elif block == '#':
                     source = IMAGEDIR + 'block_collectable.png'
 
                 elif block == 'X':
                     source = IMAGEDIR + 'block_death.png'
 
-                elif block == '#':
+                elif block == '+':
                     source = IMAGEDIR + 'block_wall.png'
 
                 elif block == 'M':
@@ -279,6 +310,7 @@ class BlackBoxLayout(BoxLayout):
     pass
 
 class DragableItem(Image):
+    dnd_layout = ObjectProperty(None)
     blocktype = StringProperty()
 
 class Item(Image):
@@ -286,11 +318,12 @@ class Item(Image):
     blocktype = StringProperty()
 
     def on_touch_down(self, touch, *args):
-        if self.collide_point(*touch.pos): #if it is touched on
+	#global runRobot
+        if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
             touch.grab(self)
             #self.remove_widget(self)
             self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
-            self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype))
+            self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
             self.dnd_layout.add_widget(self.scatter)
             #self.center = touch.pos
             #self.img.center = touch.pos
@@ -304,6 +337,9 @@ class Item(Image):
 
         if touch.grab_current == self:
             self.scatter.center = touch.pos
+
+            #if not self.dnd_layout.collide_point(*touch.pos):
+            #    self.dnd_layout.remove_widget(self.scatter)
     
     def on_touch_up(self, touch, *args):
         grid_1 = self.dnd_layout.ids.grid_1
@@ -317,20 +353,47 @@ class Item(Image):
                 if black_box.collide_point(*touch.pos):
                     #if black_box.children
                     black_box.clear_widgets()
-                    black_box.add_widget(DragableItem(source = self.source, blocktype = self.blocktype))
+                    black_box.add_widget(ItemMove(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
                     self.dnd_layout.remove_widget(self.scatter)
                     check = True
             if not grid_2.collide_point(*touch.pos) or check==False:
                 self.dnd_layout.remove_widget(self.scatter)
 
-    #         self.app.root.remove_widget(self.img)
-    #         self.add_widget(self.img)
-    #         touch.ungrab(self)
-    #         return True
+    def draw_pointer(self, pointer):
+        if pointer == '*':
+            r = 0
+            g = 1
+            b = 0
 
-    #     return super(DraggableImage, self).on_touch_up(touch, *args)
+        if pointer == '**':
+            r = 0
+            g = 0
+            b = 1
 
-#class DnDLayout(FloatLayout):
+        if pointer == '***':
+            r = 1
+            g = 0
+            b = 0
+
+        with self.canvas.after:
+            Color(r, g, b, .5, mode='rgba')
+            Rectangle(pos=self.pos, size=self.size)
+
+class ItemMove(Item):
+    # def on_touch_down(self, touch, *args):
+    #     self.draw_pointer('*')
+
+    def on_touch_down(self, touch, *args):
+        if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
+            touch.grab(self)
+            self.parent.remove_widget(self)
+            self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
+            self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
+            self.dnd_layout.add_widget(self.scatter)
+            return True
+        return super(Item, self).on_touch_down(touch, *args)
+
+
 class DnDLayout(RelativeLayout):
 
     def __init__(self, **kwargs):  
@@ -360,9 +423,12 @@ class DnDLayout(RelativeLayout):
             grid_2.add_widget(b)
 
     def reset_logic(self):
+	global runRobot
+	runRobot = False
         grid_2 = self.ids.grid_2
         for child in grid_2.children:
             child.clear_widgets()
+	self.kivyrunner.reset()	
 
 class DnDApp(App):
     list_of_img_dirs = ListProperty()

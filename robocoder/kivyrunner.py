@@ -9,7 +9,7 @@ class KivyRunner:
 
     def __init__(self):
         self.level = field.Field(10)
-
+ 	self.logic = logic.Logic(6,self.level) 	
 
     def loadLevel(self,number):
         self.level = field.Field(10)
@@ -81,7 +81,7 @@ class KivyRunner:
             self.reset()
 
     def isLevelFinished(self):
-        return self.field.getNumberOfCollectables()<1
+        return self.level.getNumberOfCollectables()<1
 
     def getLogicBoxes(self):
         logicBoxes = []
@@ -98,8 +98,8 @@ class KivyRunner:
 
         logicBoxes.append(logicblock.LogicBlock("logic_spawn.png","s"))
         logicBoxes.append(logicblock.LogicBlock("logic_aspawn.png","a"))
-        logicBoxes.append(logicblock.LogicBlock("logic_state_up.png","s+"))
-        logicBoxes.append(logicblock.LogicBlock("logic_state_down.png","s-"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_up.png","S+"))
+        logicBoxes.append(logicblock.LogicBlock("logic_state_down.png","S-"))
 
         logicBoxes.append(logicblock.LogicBlock("logic_s0.png","s0"))
         logicBoxes.append(logicblock.LogicBlock("logic_s1.png","s1"))
