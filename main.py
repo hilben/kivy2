@@ -191,19 +191,19 @@ class GameScreen(Screen):
         index = size * size - 1
 
         for child in logic_grid.children:
-                if not child.children:
-                    picture = 'block_blank.png'
-                    blocktype = '_'
-                    logic_block = LogicBlock(picture, blocktype)
-                else:
-                    picture = child.children[0].source
-                    blocktype = child.children[0].blocktype
-                    logic_block = LogicBlock(picture, blocktype)
+            if not child.children:
+                picture = 'block_blank.png'
+                blocktype = '_'
+                logic_block = LogicBlock(picture, blocktype)
+            else:
+                picture = child.children[0].source
+                blocktype = child.children[0].blocktype
+                logic_block = LogicBlock(picture, blocktype)
 
 
-                print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
-                logic[((index%size) )][int(index/size)] = logic_block
-        index-=1
+            print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
+            logic[((index%size) )][int(index/size)] = logic_block
+            index-=1
 
         for y in xrange(size):
             for x in xrange(size):
@@ -247,11 +247,19 @@ class GameScreen(Screen):
         #draw pointers
         logic_grid = self.ids.dnd.ids.grid_2
 
+        i = 0
         for child in logic_grid.children:
+
+            x = int(i%6)
+            y = int(i/6)
+            print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
+            
+            #len()
 
             if child.children:
 
                 child.children[0].draw_pointer('*')
+            i+=1
 
 
 class Blocks(Image):
@@ -318,7 +326,7 @@ class Item(Image):
     blocktype = StringProperty()
 
     def on_touch_down(self, touch, *args):
-	#global runRobot
+        #global runRobot
         if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
             touch.grab(self)
             #self.remove_widget(self)
