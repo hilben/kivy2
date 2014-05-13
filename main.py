@@ -96,14 +96,16 @@ ScreenManager:
                 on_press: root.start_game()
             Button:
                 text: 'Stop'
-                #on_press: dnd.reset_logic()
+                on_press: dnd.stop_logic()
             Button:
                 text: 'Reset'
                 on_press: dnd.reset_logic()
             Button:
                 text: 'Previous'
+                on_press: dnd.prev_level()
             Button:
                 text: 'Next'
+                on_press: dnd.next_level()
 
 
 <GameField>:
@@ -144,7 +146,7 @@ ScreenManager:
     canvas.before:
         Color:
             rgb: (200, 200, 200)
-        Rectangle:  
+        Rectangle:
             pos: self.pos
             size: self.size
 
@@ -152,7 +154,7 @@ ScreenManager:
     canvas.before:
         Color:
             rgb: (255, 0, 0)
-        Rectangle:  
+        Rectangle:
             pos: self.pos
             size: self.size
     text: self.c.text
@@ -179,7 +181,7 @@ class GameScreen(Screen):
 
     def start_game(self):
         logic_grid = self.ids.dnd.ids.grid_2
-        
+
         size = logic_grid.rows
         logic = []
 
@@ -210,7 +212,7 @@ class GameScreen(Screen):
                 print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
 
         logicobject = Logic(size,self.kivyrunner.level)
-        logicobject.data = logic 
+        logicobject.data = logic
         logicobject.printBlocks()
         self.kivyrunner.setLogic(logicobject)
         self.kivyrunner.logic.printBlocks()
@@ -227,7 +229,6 @@ class GameScreen(Screen):
         if runRobot == False:
             print "runRobot == false"
             Clock.unschedule(self.iterate_game)
-        
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
@@ -236,13 +237,13 @@ class GameScreen(Screen):
         level = self.kivyrunner.level
         level.data = self.kivyrunner.getFieldData()
 
-        game_field.clear_widgets()	
+        game_field.clear_widgets()
         game_field.populate_grid(level)
         #do iteration
         self.kivyrunner.doIteration()
         #level abbrechen
         if self.kivyrunner.isLevelFinished():
-            return False
+            runRobot == False
 
         #draw pointers
         logic_grid = self.ids.dnd.ids.grid_2
@@ -253,8 +254,6 @@ class GameScreen(Screen):
             x = int(i%6)
             y = int(i/6)
             print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
-            
-            #len()
 
             if child.children:
 
@@ -266,7 +265,7 @@ class Blocks(Image):
     pass
 
 class GameField(GridLayout):
-    def __init__(self, **kwargs):  
+    def __init__(self, **kwargs):
         super(GameField, self).__init__(**kwargs)
         Clock.schedule_once(self.populate_grid_initial)
 
@@ -309,7 +308,7 @@ class GameField(GridLayout):
                 #b.size = [min(b.size)]*2
 
         # make a quadric grid
-        
+
         #self.size = [min(self.size)]*2
         #self.size_hint = (None, None)
 
@@ -348,11 +347,11 @@ class Item(Image):
 
             #if not self.dnd_layout.collide_point(*touch.pos):
             #    self.dnd_layout.remove_widget(self.scatter)
-    
+
     def on_touch_up(self, touch, *args):
         grid_1 = self.dnd_layout.ids.grid_1
         grid_2 = self.dnd_layout.ids.grid_2
-        
+
         check = False
 
         if touch.grab_current == self:
@@ -404,7 +403,7 @@ class ItemMove(Item):
 
 class DnDLayout(RelativeLayout):
 
-    def __init__(self, **kwargs):  
+    def __init__(self, **kwargs):
         super(DnDLayout, self).__init__(**kwargs)
         Clock.schedule_once(self.populate_grids)
 
@@ -436,7 +435,25 @@ class DnDLayout(RelativeLayout):
         grid_2 = self.ids.grid_2
         for child in grid_2.children:
             child.clear_widgets()
-	self.kivyrunner.reset()	
+	self.kivyrunner.reset()
+
+    def stop_logic(self):
+        global runRobot
+        runRobot = False
+        self.kivyrunner.reset()
+
+
+    def prev_level(self):
+        global runRobot
+        runRobot = False
+        self.kivyrunner.reset()
+        self.kivyrunner.previousLevel()
+
+    def next_level(self):
+        global runRobot
+        runRobot = False
+        self.kivyrunner.reset()
+        self.kivyrunner.nextLevel()
 
 class DnDApp(App):
     list_of_img_dirs = ListProperty()
