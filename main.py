@@ -5,6 +5,11 @@ sys.path.append('robocoder')
 
 from kivy.app import App
 
+
+
+
+from kivy.core.audio import SoundLoader
+
 from kivy.uix.scatter import Scatter
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
@@ -82,6 +87,7 @@ ScreenManager:
                 orientation:'vertical'
                 size_hint_x: 0.5
                 Label:
+                    text: "Hello World!"
                 GameField:
                     id: game_field
                 Label:
@@ -94,18 +100,22 @@ ScreenManager:
             Button:
                 text: 'Go'
                 on_press: root.start_game()
+
             Button:
                 text: 'Stop'
-                on_press: dnd.stop_logic()
+                on_press: dnd.stop_logic(),game_field.populate_grid(game_field.kivyrunner.level)
+
             Button:
                 text: 'Reset'
-                on_press: dnd.reset_logic()
+                on_press: dnd.reset_logic(),game_field.populate_grid(game_field.kivyrunner.level)
+
             Button:
                 text: 'Previous'
-                on_press: dnd.prev_level()
+                on_press: dnd.prev_level(),game_field.populate_grid(game_field.kivyrunner.level)
+
             Button:
                 text: 'Next'
-                on_press: dnd.next_level()
+                on_press: dnd.next_level(), game_field.populate_grid(game_field.kivyrunner.level)
 
 
 <GameField>:
@@ -179,49 +189,60 @@ runRobot = False
 
 class GameScreen(Screen):
 
+
+    def __init__(self, **kwargs):
+        super(GameScreen, self).__init__(**kwargs)
+        Clock.schedule_once(self.load_sound)
+
+    def load_sound(self,time):
+        self.sound = SoundLoader.load('sound/Jump.wav')
+        if self.sound:
+            self.sound.play()
+
     def start_game(self):
-        logic_grid = self.ids.dnd.ids.grid_2
-
-        size = logic_grid.rows
-        logic = []
-
-        for y in xrange(size):
-            logic.append([])
-            for x in xrange(size):
-                logic[y].append(LogicBlock("","_"))
-
-        index = size * size - 1
-
-        for child in logic_grid.children:
-            if not child.children:
-                picture = 'block_blank.png'
-                blocktype = '_'
-                logic_block = LogicBlock(picture, blocktype)
-            else:
-                picture = child.children[0].source
-                blocktype = child.children[0].blocktype
-                logic_block = LogicBlock(picture, blocktype)
-
-
-            print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
-            logic[((index%size) )][int(index/size)] = logic_block
-            index-=1
-
-        for y in xrange(size):
-            for x in xrange(size):
-                print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
-
-        logicobject = Logic(size,self.kivyrunner.level)
-        logicobject.data = logic
-        logicobject.printBlocks()
-        self.kivyrunner.setLogic(logicobject)
-        self.kivyrunner.logic.printBlocks()
-
-        dt = 1#TODO
-
         global runRobot
-        runRobot = True
-        Clock.schedule_interval(self.iterate_game, dt)
+        if runRobot!=True:
+            logic_grid = self.ids.dnd.ids.grid_2
+            size = logic_grid.rows
+            logic = []
+
+            for y in xrange(size):
+                logic.append([])
+                for x in xrange(size):
+                    logic[y].append(LogicBlock("","_"))
+
+            index = size * size - 1
+
+            for child in logic_grid.children:
+                if not child.children:
+                    picture = 'block_blank.png'
+                    blocktype = '_'
+                    logic_block = LogicBlock(picture, blocktype)
+                else:
+                    picture = child.children[0].source
+                    blocktype = child.children[0].blocktype
+                    logic_block = LogicBlock(picture, blocktype)
+
+
+                print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
+                logic[((index%size) )][int(index/size)] = logic_block
+                index-=1
+
+            for y in xrange(size):
+                for x in xrange(size):
+                    print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
+
+            logicobject = Logic(size,self.kivyrunner.level)
+            logicobject.data = logic
+            logicobject.printBlocks()
+            self.kivyrunner.setLogic(logicobject)
+            self.kivyrunner.logic.printBlocks()
+
+            dt = 1#TODO
+
+            global runRobot
+            runRobot = True
+            Clock.schedule_interval(self.iterate_game, dt)
 
     def iterate_game(self,time):
 
@@ -229,6 +250,9 @@ class GameScreen(Screen):
         if runRobot == False:
             print "runRobot == false"
             Clock.unschedule(self.iterate_game)
+        else:
+            print "play sound"
+            self.sound.play()
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
@@ -237,7 +261,6 @@ class GameScreen(Screen):
         level = self.kivyrunner.level
         level.data = self.kivyrunner.getFieldData()
 
-        game_field.clear_widgets()
         game_field.populate_grid(level)
         #do iteration
         self.kivyrunner.doIteration()
@@ -247,7 +270,6 @@ class GameScreen(Screen):
 
         #draw pointers
         logic_grid = self.ids.dnd.ids.grid_2
-
         i = 0
         for child in logic_grid.children:
 
@@ -270,7 +292,6 @@ class GameScreen(Screen):
                     child.children[0].draw_pointer(False)
             i+=1
 
-
 class Blocks(Image):
     pass
 
@@ -280,12 +301,14 @@ class GameField(GridLayout):
         Clock.schedule_once(self.populate_grid_initial)
 
     def populate_grid_initial(self, abc):
+        self.clear_widgets()
         self.kivyrunner.loadLevel(1)
         level = self.kivyrunner.level
 
         self.populate_grid(level)
 
     def populate_grid(self, level):
+        self.clear_widgets()
         for y in xrange(level.size):
             for x in xrange(level.size):
                 block = level.data[x][y]
@@ -304,7 +327,6 @@ class GameField(GridLayout):
 
                 elif block == 'M':
                     source = IMAGEDIR + 'block_robot.png'
-
                 else:
                     print('################ error - unknown item')
                     break
@@ -456,7 +478,7 @@ class DnDApp(App):
 
     def build(self):
         c = Builder.load_string(kv)
-        self.kivyrunner = KivyRunner()
+        self.kivyrunner = KivyRunner(12)#TODO: hardcoded
         return c
 
 if __name__ == "__main__":
