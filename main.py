@@ -280,7 +280,8 @@ class GameScreen(Screen):
                     global runRobot
                     runRobot = False
                     self.ids.status.text = "Congratulation you beat this Level!!!!"
-                    self.beat_level.play()
+                    self.sound_beatlevel.play()
+                    return True
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
