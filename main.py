@@ -228,7 +228,7 @@ class GameScreen(Screen):
         self.sound_move = SoundLoader.load('sound/move.wav')
         self.sound_dead = SoundLoader.load('sound/dead.wav')
         self.sound_collect = SoundLoader.load('sound/collect.wav')
-
+        self.sound_beatlevel = SoundLoader.load("sound/level.ogg")
 
     def start_game(self):
         global runRobot
@@ -282,9 +282,14 @@ class GameScreen(Screen):
             self.ids.status.text = status + "Running! "
             self.sound_move.play()
             if self.collects > self.kivyrunner.level.getNumberOfCollectables():
-                print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                self.collects = self.kivyrunner.level.collects
+                self.collects = self.kivyrunner.level.getNumberOfCollectables()
                 self.sound_collect.play()
+                if self.collects==0:
+                    global runRobot
+                    runRobot = False
+                    self.ids.status.text = "Congratulation you beat this Level!!!!"
+                    self.sound_beatlevel.play()
+                    return True
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
