@@ -208,13 +208,13 @@ ScreenManager:
 
 runRobot = False
 
-class HelpContent(BoxLayout):
+class HelpContent(Image):
     pass
 
 class StartScreen(Screen):
     def help_popup(self):
 
-        popup = Popup(title='Help', content=HelpContent(), size_hint=(0.8, 0.8))
+        popup = Popup(title='Help', content=Image(source="images/help.png"), size_hint=(0.8, 0.8))
         popup.open()
 
 class GameScreen(Screen):
@@ -264,7 +264,7 @@ class GameScreen(Screen):
             logicobject.printBlocks()
             self.kivyrunner.setLogic(logicobject)
 
-            dt = 0.5
+            dt = 0.6
 
             global runRobot
             runRobot = True

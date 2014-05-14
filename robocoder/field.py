@@ -136,8 +136,8 @@ class Field:
             printStr = str(y) + ": "
             for x in range(self.size):
                 printStr = printStr +" " + self.data[x][y]
-                print printStr
-                self.printDebug()
+        print printStr
+        self.printDebug()
 
     def getBlock(self,x,y):
         if self.isOnField(x,y):

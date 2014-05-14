@@ -58,7 +58,7 @@ class Logic:
             print "cant place more pointers at " + str(x) + " " + str(y) + " exceeded max of 3"
             return False
         if self.isOnField(x, y):
-            if self.data[x][y].blocktype == "e" or self.data[x][y].blocktype == "_" or self.data[x][y] == "s":
+            if self.data[x][y].blocktype == "e" or self.data[x][y].blocktype == "_" :
                 return False
             else:
                 r = self.field.findRobot()
@@ -98,9 +98,9 @@ class Logic:
             if self.data[x][y].blocktype=="mr":
                 self.incrDict("mr")
             if self.data[x][y].blocktype=="S+":
-                self.incrDict("S+", 3)
+                self.incrDict("S+", 0.01)
             if self.data[x][y].blocktype=="S-":
-                self.incrDict("S-", 3)
+                self.incrDict("S-", 0.01)
 
 
 
@@ -114,7 +114,13 @@ class Logic:
         currentMax = -1
         duplicates = False
         maxAction = "none"
+        stateInc = 0
+        stateDecr = 0
         for action, count in self.actions.iteritems():
+            if action == "S+":
+                self.incrState()
+            if action == "S-":
+                self.decrState()
             if count>currentMax:
                 maxAction = action
                 currentMax = count
@@ -136,16 +142,17 @@ class Logic:
             self.incrState()
         if maxAction=="S-":
             self.decrState()
-        if maxAction != "none":
+        if maxAction != "none" and maxAction != "S+" and maxAction != "S-":
+            print maxAction
             self.pointers = []
+
+
 
     def incrState(self):
         self.state = (self.state + 1) % 10
-        self.pointers = []
 
     def decrState(self):
         self.state = (self.state - 1) % 10
-        self.pointers = []
 
     def find(self, fieldtype):
         foundfields = []
@@ -173,8 +180,6 @@ class Logic:
 
     def start(self):
         self.reset()
-        for s in self.find("s"):
-            self.pointers.append(pointer.Pointer(s.x, s.y))
 
     #removes all pointers at a given position
     def removePointers(self, x, y, maxNumber=-1):
