@@ -5,6 +5,11 @@ sys.path.append('robocoder')
 
 from kivy.app import App
 
+
+
+
+from kivy.core.audio import SoundLoader
+
 from kivy.uix.scatter import Scatter
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
@@ -184,6 +189,16 @@ runRobot = False
 
 class GameScreen(Screen):
 
+
+    def __init__(self, **kwargs):
+        super(GameScreen, self).__init__(**kwargs)
+        Clock.schedule_once(self.load_sound)
+
+    def load_sound(self,time):
+        self.sound = SoundLoader.load('sound/Jump.wav')
+        if self.sound:
+            self.sound.play()
+
     def start_game(self):
         global runRobot
         if runRobot!=True:
@@ -235,6 +250,9 @@ class GameScreen(Screen):
         if runRobot == False:
             print "runRobot == false"
             Clock.unschedule(self.iterate_game)
+        else:
+            print "play sound"
+            self.sound.play()
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
