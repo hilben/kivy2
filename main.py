@@ -311,6 +311,8 @@ class GameScreen(Screen):
         #update level
         game_field = self.ids.game_field
 
+        status += "Current state: " + str(self.kivyrunner.logic.state)
+
         level = self.kivyrunner.level
         level.data = self.kivyrunner.getFieldData()
 
