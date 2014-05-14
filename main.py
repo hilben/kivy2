@@ -43,6 +43,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 from logicblock import LogicBlock
 
+from kivy.uix.popup import Popup
+
 IMAGEDIR = 'images/'
 
 kv = '''
@@ -50,7 +52,7 @@ ScreenManager:
     StartScreen:
     GameScreen:
 
-<StartScreen@Screen>:
+<StartScreen>:
     name: 'menu'
     BoxLayout:
         orientation:'vertical'
@@ -65,6 +67,9 @@ ScreenManager:
             Button:
                 text: 'Start Game'
                 on_press: root.manager.current = 'game'
+            Button:
+                text: 'Help'
+                on_press: root.help_popup()
             Button:
                 text: 'End Game'
                 on_press: app.stop()
@@ -183,10 +188,26 @@ ScreenManager:
 <Item>:
     #size: (40, 40)
     #size_hint: (None, None)
+
+
+<HelpContent>:
+    orientation:'vertical'
+    Label:
+        text: 'Im a helptext'
+
 '''
 
 
 runRobot = False
+
+class HelpContent(BoxLayout):
+    pass
+
+class StartScreen(Screen):
+    def help_popup(self):
+
+        popup = Popup(title='Help', content=HelpContent(), size_hint=(0.8, 0.8))
+        popup.open()
 
 class GameScreen(Screen):
 
