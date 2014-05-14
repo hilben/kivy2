@@ -264,6 +264,22 @@ class GameScreen(Screen):
 
     def iterate_game(self,time):
 
+        #draw pointers
+        logic_grid = self.ids.dnd.ids.grid_2
+        i = 0
+        for child in logic_grid.children:
+            x = int(6-i%6)
+            y = int(6-i/6)
+            pointer = self.kivyrunner.logic.getPointerAt(x,y)
+
+            if pointer:
+                if child.children:
+                    child.children[0].draw_pointer(True)
+            else:
+                if child.children:
+                    child.children[0].draw_pointer(False)
+            i+=1
+
         status = "Roborunner: "
         global runRobot
         if runRobot == False:
@@ -297,21 +313,6 @@ class GameScreen(Screen):
         if self.kivyrunner.isLevelFinished():
             runRobot == False
 
-        #draw pointers
-        logic_grid = self.ids.dnd.ids.grid_2
-        i = 0
-        for child in logic_grid.children:
-            x = int(6-i%6)
-            y = int(6-i/6)
-            pointer = self.kivyrunner.logic.getPointerAt(x,y)
-
-            if pointer:
-                if child.children:
-                    child.children[0].draw_pointer(True)
-            else:
-                if child.children:
-                    child.children[0].draw_pointer(False)
-            i+=1
 
 class Blocks(Image):
     pass
