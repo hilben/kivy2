@@ -340,7 +340,7 @@ class GameField(GridLayout):
 
     def populate_grid_initial(self, abc):
         self.clear_widgets()
-        self.kivyrunner.loadLevel(1)
+        self.kivyrunner.loadLevel(0)
         level = self.kivyrunner.level
 
         self.populate_grid(level)
