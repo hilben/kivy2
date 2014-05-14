@@ -288,14 +288,14 @@ class GameScreen(Screen):
                     child.children[0].draw_pointer(False)
             i+=1
 
-        status = "Roborunner: "
+        status = "Robot: "
         global runRobot
         if runRobot == False:
             print "runRobot == false"
-            self.ids.status.text = status + "Not Running! "
             Clock.unschedule(self.iterate_game)
+            status += " Not running"
         else:
-            self.ids.status.text = status + "Running! "
+            status += "Running! "
             self.sound_move.play()
             if self.collects > self.kivyrunner.level.getNumberOfCollectables():
                 self.collects = self.kivyrunner.level.getNumberOfCollectables()
@@ -303,7 +303,7 @@ class GameScreen(Screen):
                 if self.collects==0:
                     global runRobot
                     runRobot = False
-                    self.ids.status.text = "Congratulation you beat this Level!!!!"
+                    status = "Congratulation you beat this Level! Press next to go on"
                     self.sound_beatlevel.play()
                     return True
         print "iterate!"
@@ -321,6 +321,7 @@ class GameScreen(Screen):
         if self.kivyrunner.isLevelFinished():
             runRobot == False
 
+        self.ids.status.text = status
 
 class Blocks(Image):
     pass
