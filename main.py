@@ -276,15 +276,23 @@ class GameScreen(Screen):
         i = 0
         for child in logic_grid.children:
 
-            x = int(i%6)
-            y = int(i/6)
-            print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
-
+            x = int(6-i%6)
+            y = int(6-i/6)
+            #print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
+            print('+'+str(self.kivyrunner.logic.getPointerAt(1,2)))
             pointer = self.kivyrunner.logic.getPointerAt(x,y)
-            if len(pointer) == 0:
+            print('-'+str(pointer)+'#'+str(child.children))
 
+            if pointer:
+                #print('+2')
                 if child.children:
-                    child.children[0].draw_pointer('*')
+                    
+                    child.children[0].draw_pointer(True)
+            else:
+                #print('+3')
+                if child.children:
+                    #print('+4')
+                    child.children[0].draw_pointer(False)
             i+=1
 
 class Blocks(Image):
@@ -341,10 +349,6 @@ class Item(Image):
     dnd_layout = ObjectProperty(None)
     blocktype = StringProperty()
 
-    def __init__(self, **kwargs):
-        super(Item, self).__init__(**kwargs)
-        is_pointed_at = False
-
     def on_touch_down(self, touch, *args):
         #global runRobot
         if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
@@ -383,45 +387,38 @@ class Item(Image):
                 self.dnd_layout.remove_widget(self.scatter)
 
     def draw_pointer(self, pointer):
-        if pointer == True and self.is_pointed_at == False:
+        if pointer == True:
             r = 0
             g = 1
             b = 0
             d = 0.2
 
-            self.is_pointed_at = True
-
-            with self.canvas:
-                self.color = Color(r, g, b, .2, mode='rgba')
+            self.canvas.after.clear()
+            with self.canvas.after:
+                Color(r, g, b, d, mode='rgba')
                 Rectangle(pos=self.pos, size=self.size)
 
-        if pointer == False:
+        elif pointer == False:
             r = 0
             g = 0
-            b = 1
-            d = 0.2
-
-        if pointer == '***':
-            r = 1
-            g = 0
             b = 0
-            d = 0.2
+            d = 0
+            #print('abc')
 
-
-        #self.canvas.clear()
-        #with self.canvas.after:
+            self.canvas.after.clear()
 
 
 class ItemMove(Item):
-    def on_touch_down(self, touch, *args):
-        if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
-            touch.grab(self)
-            self.parent.remove_widget(self)
-            self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
-            self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
-            self.dnd_layout.add_widget(self.scatter)
-            return True
-        return super(Item, self).on_touch_down(touch, *args)
+    pass
+    # def on_touch_down(self, touch, *args):
+    #     if self.collide_point(*touch.pos) and not runRobot: #if it is touched on
+    #         touch.grab(self)
+    #         self.parent.remove_widget(self)
+    #         self.scatter = Scatter(center = touch.pos, size= self.size, size_hint=(None, None), auto_bring_to_front = True)
+    #         self.scatter.add_widget(DragableItem(source = self.source, blocktype = self.blocktype, dnd_layout = self.dnd_layout))
+    #         self.dnd_layout.add_widget(self.scatter)
+    #         return True
+    #     return super(Item, self).on_touch_down(touch, *args)
 
 
 class DnDLayout(RelativeLayout):
