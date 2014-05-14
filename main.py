@@ -264,14 +264,24 @@ class GameScreen(Screen):
             logicobject.printBlocks()
             self.kivyrunner.setLogic(logicobject)
 
-            dt = 1#TODO
+            dt = 0.5
 
             global runRobot
             runRobot = True
+
+            Clock.unschedule(self.iterate_game)
             Clock.schedule_interval(self.iterate_game, dt)
 
     def iterate_game(self,time):
 
+        #do iteration
+        if not (self.kivyrunner.doIteration()):
+            self.sound_dead.play()
+            status = "Oh no the robot died! Level is reseted"
+            runRobot == False
+            return True
+        if self.kivyrunner.isLevelFinished():
+            runRobot == False
         #draw pointers
         logic_grid = self.ids.dnd.ids.grid_2
         i = 0
@@ -317,11 +327,6 @@ class GameScreen(Screen):
         level.data = self.kivyrunner.getFieldData()
 
         game_field.populate_grid(level)
-        #do iteration
-        self.kivyrunner.doIteration()
-        #level abbrechen
-        if self.kivyrunner.isLevelFinished():
-            runRobot == False
 
         self.ids.status.text = status
 

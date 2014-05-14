@@ -136,6 +136,8 @@ class Logic:
             self.incrState()
         if maxAction=="S-":
             self.decrState()
+        if maxAction != "none":
+            self.pointers = []
 
     def incrState(self):
         self.state = (self.state + 1) % 10

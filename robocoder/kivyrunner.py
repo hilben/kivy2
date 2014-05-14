@@ -79,10 +79,12 @@ class KivyRunner:
             self.logic.doIteration()
             self.logic.printBlocks()
             self.level.printBlocks()
+            return True
         except field.FieldException as e:
             print "Level was reseted`because: "
             print str(e)
             self.reset()
+            return False
 
     def isLevelFinished(self):
         return self.level.getNumberOfCollectables()<1
