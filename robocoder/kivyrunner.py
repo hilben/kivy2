@@ -7,9 +7,10 @@ class KivyRunner:
     currentLevel = 0
     level = field.Field(1)
 
-    def __init__(self):
+    def __init__(self,maxLevels):
         self.level = field.Field(10)
         self.logic = logic.Logic(6, self.level)
+        self.maxLevels = maxLevels
 
     def loadLevel(self, number):
         self.level = field.Field(10)
@@ -43,7 +44,11 @@ class KivyRunner:
             y += 1
 
     def nextLevel(self):
-        self.currentLevel = self.currentLevel + 1
+
+        if self.currentLevel+1<self.maxLevels:
+            self.currentLevel = self.currentLevel + 1
+        else:
+            print "Can't load next level"
         self.loadLevel(self.currentLevel)
 
     def previousLevel(self):
