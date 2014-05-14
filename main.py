@@ -217,9 +217,10 @@ class GameScreen(Screen):
         Clock.schedule_once(self.load_sound)
 
     def load_sound(self,time):
-        self.sound = SoundLoader.load('sound/Jump.wav')
-        if self.sound:
-            self.sound.play()
+        self.sound_move = SoundLoader.load('sound/move.wav')
+        self.sound_dead = SoundLoader.load('sound/dead.wav')
+        self.sound_collect = SoundLoader.load('sound/collect.wav')
+
 
     def start_game(self):
         global runRobot
@@ -227,7 +228,7 @@ class GameScreen(Screen):
             logic_grid = self.ids.dnd.ids.grid_2
             size = logic_grid.rows
             logic = []
-
+            self.collects = self.kivyrunner.level.getNumberOfCollectables() #everytime this number decreases -> play sound
             for y in xrange(size):
                 logic.append([])
                 for x in xrange(size):
@@ -246,19 +247,14 @@ class GameScreen(Screen):
                     logic_block = LogicBlock(picture, blocktype)
 
 
-                print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
+                #print str(int(index/size)) + "  y: "+  str(size - ((index%size) - 1))
                 logic[((index%size) )][int(index/size)] = logic_block
                 index-=1
-
-            for y in xrange(size):
-                for x in xrange(size):
-                    print "blocktype: x:" + str(x) + " y: " + str(y) + " "  + str(logic[x][y].blocktype)
 
             logicobject = Logic(size,self.kivyrunner.level)
             logicobject.data = logic
             logicobject.printBlocks()
             self.kivyrunner.setLogic(logicobject)
-            self.kivyrunner.logic.printBlocks()
 
             dt = 1#TODO
 
@@ -276,7 +272,11 @@ class GameScreen(Screen):
             Clock.unschedule(self.iterate_game)
         else:
             self.ids.status.text = status + "Running! "
-            self.sound.play()
+            self.sound_move.play()
+            if self.collects > self.kivyrunner.level.getNumberOfCollectables():
+                print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                self.collects = self.kivyrunner.level.collects
+                self.sound_collect.play()
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
         #update level
@@ -296,10 +296,8 @@ class GameScreen(Screen):
         logic_grid = self.ids.dnd.ids.grid_2
         i = 0
         for child in logic_grid.children:
-
-            x = int(5-i%6)
-            y = int(5-i/6)
-
+            x = int(6-i%6)
+            y = int(6-i/6)
             pointer = self.kivyrunner.logic.getPointerAt(x,y)
 
             if pointer:
