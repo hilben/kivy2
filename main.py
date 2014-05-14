@@ -87,7 +87,8 @@ ScreenManager:
                 orientation:'vertical'
                 size_hint_x: 0.5
                 Label:
-                    text: "Hello World!"
+                    id: status
+                    text: "Welcome!"
                 GameField:
                     id: game_field
                 Label:
@@ -246,12 +247,14 @@ class GameScreen(Screen):
 
     def iterate_game(self,time):
 
+        status = "Roborunner: "
         global runRobot
         if runRobot == False:
             print "runRobot == false"
+            self.ids.status.text = status + "Not Running! "
             Clock.unschedule(self.iterate_game)
         else:
-            print "play sound"
+            self.ids.status.text = status + "Running! "
             self.sound.play()
         print "iterate!"
         self.kivyrunner.logic.printBlocks()
