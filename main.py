@@ -82,11 +82,12 @@ ScreenManager:
         BoxLayout:
             orientation: 'horizontal'
             BoxLayout:
-                orientation:'vertical'
+                orientation:'horizontal'
                 size_hint_x: 0.5
-                #Label:
                 DnDLayout:
                     id: dnd
+                    size_hint: (None, None)
+                    size: min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height)
                 #Label:
             BoxLayout:
                 orientation:'vertical'
@@ -134,6 +135,13 @@ ScreenManager:
     spacing: 2
 
 <DnDLayout>:
+    #canvas.after:
+    #    Color:
+    #        rgb: (50, 0, 0)
+    #    Rectangle:
+    #        pos: self.pos
+    #        size: self.size
+
     kivyrunner: app.kivyrunner
     size_hint: (None, None)
     size: min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height)
