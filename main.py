@@ -273,22 +273,16 @@ class GameScreen(Screen):
         i = 0
         for child in logic_grid.children:
 
-            x = int(6-i%6)
-            y = int(6-i/6)
-            #print('x: '+str(x)+'   y:'+str(y) +'    '+ str(self.kivyrunner.logic.getPointerAt(x,y)))
-            print('+'+str(self.kivyrunner.logic.getPointerAt(1,2)))
+            x = int(5-i%6)
+            y = int(5-i/6)
+
             pointer = self.kivyrunner.logic.getPointerAt(x,y)
-            print('-'+str(pointer)+'#'+str(child.children))
 
             if pointer:
-                #print('+2')
                 if child.children:
-                    
                     child.children[0].draw_pointer(True)
             else:
-                #print('+3')
                 if child.children:
-                    #print('+4')
                     child.children[0].draw_pointer(False)
             i+=1
 
