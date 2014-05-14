@@ -276,8 +276,8 @@ class GameScreen(Screen):
         logic_grid = self.ids.dnd.ids.grid_2
         i = 0
         for child in logic_grid.children:
-            x = int(6-i%6)
-            y = int(6-i/6)
+            x = int(5-i%6)
+            y = int(5-i/6)
             pointer = self.kivyrunner.logic.getPointerAt(x,y)
 
             if pointer:
